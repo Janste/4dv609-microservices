@@ -12,7 +12,9 @@ public class Registration implements Consumer<Event<User>>
     public void accept(Event<User> userEvent)
     {
         System.out.println("Registering new account");
-        userRepository.registerUser(userEvent.getData());
+
+        // not yet implemented
+        //userRepository.registerUser(userEvent.getData());
         System.out.println("User registered");
     }
 }
