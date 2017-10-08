@@ -1,5 +1,6 @@
 package application;
 
+import application.account.Registration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,9 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import reactor.Environment;
 import reactor.bus.EventBus;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 import static reactor.bus.selector.Selectors.$;
 
 @Configuration
@@ -21,12 +19,11 @@ import static reactor.bus.selector.Selectors.$;
 @ComponentScan
 public class Application implements CommandLineRunner {
 
-    private static final int NUMBER_OF_QUOTES = 10;
+    private static String email = "jack.sparrow@gmail.com";
 
     @Bean
     Environment env() {
-        return Environment.initializeIfEmpty()
-                .assignErrorJournal();
+        return Environment.initializeIfEmpty().assignErrorJournal();
     }
 
     @Bean
@@ -38,26 +35,18 @@ public class Application implements CommandLineRunner {
     private EventBus eventBus;
 
     @Autowired
-    private Receiver receiver;
+    private Authentication authentication;
 
     @Autowired
-    private Publisher publisher;
+    private Registration registration;
 
-    @Bean
-    public CountDownLatch latch() {
-        return new CountDownLatch(NUMBER_OF_QUOTES);
-    }
-
-    //@Override
     public void run(String... args) throws Exception {
-        eventBus.on($("quotes"), receiver);
-        publisher.publishQuotes(NUMBER_OF_QUOTES);
+        eventBus.on($("registerNewUser"), registration);
+        authentication.notifyRegisterNewUser(email);
     }
 
     public static void main(String[] args) throws InterruptedException {
         ApplicationContext app = SpringApplication.run(Application.class, args);
-
-        app.getBean(CountDownLatch.class).await(1, TimeUnit.SECONDS);
 
         app.getBean(Environment.class).shutdown();
     }
