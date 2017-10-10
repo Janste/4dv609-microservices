@@ -10,11 +10,11 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.context.annotation.Bean;
 
-import se.lnu.service.common.channels.Register;
+import se.lnu.service.common.channels.Auth;
 import se.lnu.service.common.message.User;
 
 @SpringBootApplication
-@EnableBinding(Register.class)
+@EnableBinding(Auth.class)
 public class Application {
 
 	@Autowired
@@ -26,7 +26,7 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@StreamListener(Register.INPUT)
+	@StreamListener(Auth.REGISTER_INPUT)
 	public void processUser(User user) {
 		logger.info("Registering user: " + user);
 	}

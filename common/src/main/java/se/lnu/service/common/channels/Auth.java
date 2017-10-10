@@ -5,13 +5,13 @@ import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.SubscribableChannel;
 
-public interface Register {
-	String INPUT = "register-in";
-	String OUTPUT = "register-ex";
+public interface Auth {
+	String REGISTER_INPUT = "register-in";
+	String REGISTER_OUTPUT = "register-ex";
 	
-	@Input(Register.INPUT)
+	@Input(Auth.REGISTER_INPUT)
 	SubscribableChannel input();
 	
-	@Output(Register.OUTPUT)
+	@Output(Auth.REGISTER_OUTPUT)
 	MessageChannel output();
 }

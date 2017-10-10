@@ -12,12 +12,12 @@ import org.springframework.integration.annotation.Poller;
 import org.springframework.integration.core.MessageSource;
 import org.springframework.messaging.support.GenericMessage;
 
-import se.lnu.service.common.channels.Register;
+import se.lnu.service.common.channels.Auth;
 import se.lnu.service.common.message.User;
 
 
 @SpringBootApplication
-@EnableBinding(Register.class)
+@EnableBinding(Auth.class)
 public class Application {
 
 	protected Logger logger = Logger.getLogger(Application.class.getName());
@@ -27,7 +27,7 @@ public class Application {
 	}
 
 	@Bean
-	@InboundChannelAdapter(value = Register.OUTPUT, poller = @Poller(fixedDelay = "10000", maxMessagesPerPoll = "1"))
+	@InboundChannelAdapter(value = Auth.REGISTER_OUTPUT, poller = @Poller(fixedDelay = "10000", maxMessagesPerPoll = "1"))
 	public MessageSource<User> userSource() {
 		return () -> {
 			User u = new User();
