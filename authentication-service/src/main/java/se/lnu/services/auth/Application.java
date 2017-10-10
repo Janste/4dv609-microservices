@@ -2,6 +2,7 @@ package se.lnu.services.auth;
 
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
@@ -25,17 +26,9 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
-
-	@Bean
-	@InboundChannelAdapter(value = Auth.REGISTER_OUTPUT, poller = @Poller(fixedDelay = "10000", maxMessagesPerPoll = "1"))
-	public MessageSource<User> userSource() {
-		return () -> {
-			User u = new User();
-			u.setFirstName("TestName");
-			logger.info("Sending");
-			return new GenericMessage<>(u); 
-		};
-	}
+	
+	@Autowired
+	AuthenticationController controller;
 	
 	@Bean
 	public AlwaysSampler defaultSampler() {
