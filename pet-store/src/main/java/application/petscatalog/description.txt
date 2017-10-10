@@ -1,1 +1,0 @@
-Here we can have pets/products catalog microservice
