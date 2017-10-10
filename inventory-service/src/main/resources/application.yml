@@ -21,4 +21,4 @@ spring:
                 password: guest
                 
 server:  
-  port: ${PORT:2224}
+  port: ${PORT:2226}
