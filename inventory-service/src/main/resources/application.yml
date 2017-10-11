@@ -6,8 +6,8 @@ spring:
           destination: ex.stream.out
           group: shipment
           binder: rabbit1
-        output:
-          destination: ex.stream.out2
+        add-cart-ex:
+          destination: add.cart.out
           binder: rabbit1
       binders:
         rabbit1:

@@ -2,9 +2,9 @@ spring:
   cloud:
     stream:
       bindings:
-        input:
-          destination: ex.stream.out
-          group: product
+        add-cart-in:
+          destination: add.cart.out
+          group: cart
           binder: rabbit1
         output:
           destination: ex.stream.out2
