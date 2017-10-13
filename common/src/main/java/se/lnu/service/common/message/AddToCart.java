@@ -3,15 +3,15 @@ package se.lnu.service.common.message;
 import se.lnu.service.common.animals.Pet;
 
 public class AddToCart {
-	private long userId;
+	private String userEmail;
 	private Pet pet;
 	
-	public long getUserId() {
-		return userId;
+	public String getUserEmail() {
+		return userEmail;
 	}
 	
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setUserId(String userEmail) {
+		this.userEmail = userEmail;
 	}
 	
 	public Pet getPet() {
@@ -24,6 +24,6 @@ public class AddToCart {
 	
 	@Override
 	public String toString() {
-		return userId + " " + pet.toString();
+		return userEmail + " " + pet.toString();
 	}
 }

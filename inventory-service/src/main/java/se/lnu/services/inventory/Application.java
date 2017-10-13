@@ -22,6 +22,11 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
+	
+	// TODO bind to listener add params etc
+	public void OnPaymentCompleteEvent() {
+		
+	}
 
 	@Bean
 	public AlwaysSampler defaultSampler() {
