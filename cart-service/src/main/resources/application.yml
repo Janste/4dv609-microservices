@@ -3,8 +3,11 @@ spring:
     stream:
       bindings:
         add-cart-in:
-          destination: add.cart.out
+          destination: add.cart.out2
           group: cart
+          binder: rabbit1
+        added-cart-out:
+          destination: added.cart.out
           binder: rabbit1
         output:
           destination: ex.stream.out2
