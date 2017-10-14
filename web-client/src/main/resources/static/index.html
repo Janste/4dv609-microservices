@@ -51,7 +51,7 @@
             return;
         }
         if (socket.readyState == WebSocket.OPEN) {
-            var msg = JSON.stringify({
+            /*var msg = JSON.stringify({
                 "token": i++ + " ",
                 "type": "addToCart",
                 "pet" : 
@@ -62,10 +62,14 @@
                     "type" : "Siberian",
                     "id": i,
                 }
-            });
+            });*/
             /*var msg = JSON.stringify({
               "type": "requestInventory"
             });*/
+            var msg = JSON.stringify({
+              "type": "requestCart",
+              "token": "test"
+            });
             socket.send(msg);
         } else {
             alert("The socket is not open.");

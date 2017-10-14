@@ -60,6 +60,53 @@ public class InventoryAccessLayer
     	return found;
     }
     
+    public List<Pet> getCartPets(List<Integer> petIDs) {
+    	ArrayList<Pet> res = new ArrayList<>();
+    	
+    	try {
+    		StringBuilder petQuery = new StringBuilder();
+    		boolean first = true;
+    		for (int i : petIDs) {
+    			if (first)
+    				first = false;
+    			else
+    				petQuery.append(",");
+    			petQuery.append(i);
+    		}
+            String query = "SELECT * FROM INVENTORY WHERE ID IN (" + petQuery.toString() + ");";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+            	Pet next = null;
+                String type = result.getString("type");
+                switch (type) {
+                case "Cat":
+                	next = new Cat();
+                	((Cat)next).setType(Cat.SubType.valueOf(result.getString("breed")));
+                	break;
+                case "Dog":
+                	next = new Dog();
+                	((Dog)next).setType(Dog.SubType.valueOf(result.getString("breed")));
+                	break;
+                default:
+                	throw new IllegalArgumentException();
+                }
+                next.setID(result.getInt("id"));
+            	next.setDescription(result.getString("description"));
+            	next.setName(result.getString("name"));
+            	next.setValue(result.getInt("value"));
+                res.add(next);
+            }
+            result.close();
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    	
+    	return res;
+    }
+    
     public List<Pet> getPets() {
     	ArrayList<Pet> res = new ArrayList<>();
     	
@@ -99,23 +146,22 @@ public class InventoryAccessLayer
     }
 
     public boolean removePet(Pet pet) {
-
-        try { //TODO
-            String sql = "INSERT INTO USER VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    	boolean success = false;
+        try {
+            String sql = "DELETE FROM INVENTORY WHERE id = ?;";
             PreparedStatement ps = connection.prepareStatement(sql);
-
-            ps.executeUpdate();
+            ps.setInt(1, pet.getID());
+            
+            int num = ps.executeUpdate();
+            if (num > 0) {
+            	success = true;
+            }
             ps.close();
-            connection.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
 
-        return true;
+        return success;
     }
-    
-    //TODO
-
 
 }

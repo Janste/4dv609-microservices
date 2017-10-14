@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 
 import se.lnu.service.common.channels.Inventory;
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.RequestCart;
 import se.lnu.service.common.message.RequestPets;
 
 @Controller
@@ -50,6 +51,25 @@ public class InventoryController {
 		RequestPets pets = new RequestPets();
 		pets.setConnectionID(connectionId);
 		inventory.requestInventoryOutput().send(MessageBuilder.withPayload(pets).build());
+	}
+	
+	public void requestCart(String email) {
+		RequestCart cart = new RequestCart();
+		cart.setUserId(email);
+		inventory.requestCartOutput().send(MessageBuilder.withPayload(cart).build());
+	}
+	
+	@StreamListener(Inventory.REQUEST_CART_INPUT)
+	public void requestCartInput(RequestCart cart) {
+		Set<String> channels = WebsocketSinkServer.emailsToChannel.getOrDefault(cart.getUserEmail(), null);
+		if (channels != null) {
+			for (Channel channel : WebsocketSinkServer.channels) {
+				if (channels.contains(channel.id().toString())) {
+					channel.write(new TextWebSocketFrame(cart.toString()));
+					channel.flush();
+				}
+			}
+		}
 	}
 	
 	@StreamListener(Inventory.REQUEST_INVENTORY_INPUT)

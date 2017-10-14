@@ -18,4 +18,8 @@ public class InventoryRepository
     public List<Pet> getPets() {
     	return InventoryAccessLayer.getInstance().getPets();
     }
+    
+    public List<Pet> getCartPets(List<Integer> ids) {
+    	return InventoryAccessLayer.getInstance().getCartPets(ids);
+    }
 }

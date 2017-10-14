@@ -1,0 +1,12 @@
+Port: 3306
+Username: root
+Password: my_password
+
+
+create database cart_service;
+
+create table Cart (
+    Id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    OwnerEmail varchar(255) NOT NULL,
+    Pet int NOT NULL
+);
