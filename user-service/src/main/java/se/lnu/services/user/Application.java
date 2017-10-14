@@ -2,7 +2,6 @@ package se.lnu.services.user;
 
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
@@ -17,8 +16,6 @@ import se.lnu.service.common.message.User;
 @EnableBinding(Auth.class)
 public class Application {
 
-	@Autowired
-	private UserService userService;
 	
 	protected Logger logger = Logger.getLogger(Application.class.getName());
 

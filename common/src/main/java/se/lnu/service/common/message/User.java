@@ -12,6 +12,7 @@ public class User
     private String telephone;
     private String email;
     private String password;
+    private String token;
 
     public String getFirstName()
     {
@@ -113,8 +114,21 @@ public class User
         this.password = password;
     }
     
+	public String getToken() {
+		return token;
+	}
+	
+	public void setToken(String token) {
+		this.token = token;
+	}
+    
     @Override
 	public String toString() {
-		return firstName; //TODO
+		return firstName + " " + secondName + "\n" +
+				streetAddress + "\n" +
+				zipCode + " " + state + " " + city + "\n" + 
+				country + "\n" +
+				telephone + "\n" +
+				email; 
 	}
 }
