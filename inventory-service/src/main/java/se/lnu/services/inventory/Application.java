@@ -1,6 +1,5 @@
 package se.lnu.services.inventory;
 
-import java.util.Random;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +9,19 @@ import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.support.MessageBuilder;
 
+import se.lnu.service.common.animals.Pet;
 import se.lnu.service.common.channels.Inventory;
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.RequestPets;
+import se.lnu.services.inventory.data.InventoryRepository;
 
 @SpringBootApplication
 @EnableBinding(Inventory.class)
 public class Application {
-
-	@Autowired
-	private InventoryService inventoryService;
+	private InventoryRepository inventoryService = new InventoryRepository();
 	
 	@Autowired
 	private Inventory inventory;
@@ -28,9 +29,7 @@ public class Application {
 	@StreamListener(Inventory.ADD_CART_INPUT)
 	public void processInventory(AddToCart request) throws InterruptedException {
 		logger.info("Checking inventory: " + request);
-		Thread.sleep(2000);
-		//TODO check if valid inventory
-		if (new Random().nextInt(20) > 10) {
+		if (!inventoryService.petExists(request.getPet())) {
 			request.setSuccess(false);
 			request.setError("This pet doesn't exist!");
 			inventory.addedToCartOutput().send(MessageBuilder.withPayload(request).build());
@@ -39,15 +38,21 @@ public class Application {
 		inventory.addToCartOutput().send(MessageBuilder.withPayload(request).build());
 	}
 	
+	@StreamListener(Inventory.REQUEST_INVENTORY_INPUT)
+	@SendTo(Inventory.REQUEST_INVENTORY_OUTPUT)
+	public RequestPets requestInventory(RequestPets pets) {
+		logger.info("Requesting pet inventory");
+		pets.setPets(inventoryService.getPets());
+		for (Pet pet : pets.getPets()) {
+			System.out.println(pet.toString());
+		}
+		return pets;
+	}
+	
 	protected Logger logger = Logger.getLogger(Application.class.getName());
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
-	}
-	
-	// TODO bind to listener add params etc
-	public void OnPaymentCompleteEvent() {
-		
 	}
 
 	@Bean

@@ -11,9 +11,18 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = Cat.class, name = "Cat")
 })
 public abstract class Pet {
+	private int id;
 	private String name;
 	private int value;
 	private String description;
+	
+	public void setID(int id) {
+		this.id = id;
+	}
+	
+	public int getID() {
+		return id;
+	}
 	
 	public void setName(String name) {
 		this.name = name;
@@ -43,7 +52,7 @@ public abstract class Pet {
 	
 	@Override
 	public String toString() {
-		return this.getName() + " " + this.getValue() + " " + this.getType();
+		return this.getName() + " " + this.getValue() + " " + this.getType() + " " + id;
 	}
 
 }

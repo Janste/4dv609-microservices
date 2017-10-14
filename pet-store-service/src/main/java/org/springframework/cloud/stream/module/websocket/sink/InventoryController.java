@@ -9,9 +9,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Controller;
 
@@ -20,8 +17,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
+import se.lnu.service.common.animals.Pet;
 import se.lnu.service.common.channels.Inventory;
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.RequestPets;
 
 @Controller
 @EnableBinding(Inventory.class)
@@ -48,8 +47,31 @@ public class InventoryController {
 		}
     }
 	
+	public void requestInventory(String connectionId) {
+		RequestPets pets = new RequestPets();
+		pets.setConnectionID(connectionId);
+		inventory.requestInventoryOutput().send(MessageBuilder.withPayload(pets).build());
+	}
+	
+	@StreamListener(Inventory.REQUEST_INVENTORY_INPUT)
+	public void requestInventoryInput(RequestPets pets) {
+		//TODO properly
+		String res = "";
+		String target = pets.getConnectionID();
+		for (Pet pet : pets.getPets()) {
+			res += " " + pet.toString();
+		}
+		for (Channel channel : WebsocketSinkServer.channels) {
+			if (channel.id().toString().equals(target)) {
+				channel.write(new TextWebSocketFrame(res));
+				channel.flush();
+			}
+		}
+	}
+	
 	@StreamListener(Inventory.ADDED_TO_CART_INPUT)
 	public void websocketSink(AddToCart message) {
+		//TODO properly
 		String messagePayload = message.toString();
 		System.out.println("REBOUND: " + messagePayload);
 		Set<String> channels = WebsocketSinkServer.emailsToChannel.getOrDefault(message.getUserEmail(), null);

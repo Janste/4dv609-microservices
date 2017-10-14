@@ -14,6 +14,12 @@ spring:
         added-cart-in:
           destination: added.cart.out
           binder: rabbit1
+        request-inv-in:
+          destination: request.inv.out2
+          binder: rabbit1
+        request-inv-out:
+          destination: request.inv.out
+          binder: rabbit1
       binders:
         rabbit1:
           type: rabbit
