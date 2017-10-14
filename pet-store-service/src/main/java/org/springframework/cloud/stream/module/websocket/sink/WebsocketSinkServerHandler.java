@@ -181,7 +181,17 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		//TODO CHECK TOKEN AUTH HERE AND DECIDE ON REQUEST TYPE
 		
 		JsonObject jsonObject = new JsonParser().parse(frame.text()).getAsJsonObject();
+			
+		String reqType = jsonObject.get("type").getAsString();
 		
+		// Some requests don't require auth
+		switch (reqType) {
+		case "requestInventory":
+			inventoryController.requestInventory(ctx.channel().id().toString());
+			return;
+		}
+		
+		// Others do
 		String token = jsonObject.get("token").getAsString();
 		String email = token; //TODO
 		jsonObject.addProperty("userEmail", email);
@@ -194,14 +204,16 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 			emails = WebsocketSinkServer.emailsToChannel.get(email);
 		}
 		emails.add(ctx.channel().id().toString());
-		
-		String reqType = jsonObject.get("type").getAsString();
+
 		switch (reqType) { //TODO others
-			case "addToCart":
-				inventoryController.addToCart(jsonObject);
+		case "addToCart":
+			inventoryController.addToCart(jsonObject);
 			break;
-			default:
-				throw new IllegalArgumentException("Invalid type of request");
+		case "requestCart":
+			inventoryController.requestCart(email);
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid type of request");
 		}
 		System.out.println(reqType);
 		//User user = new User();

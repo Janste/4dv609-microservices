@@ -12,6 +12,12 @@ spring:
         output:
           destination: ex.stream.out2
           binder: rabbit1
+        request-cart-in:
+          destination: request.cart.out
+          binder: rabbit1
+        request-cart-out:
+          destination: request.cart.out2
+          binder: rabbit1
       binders:
         rabbit1:
           type: rabbit

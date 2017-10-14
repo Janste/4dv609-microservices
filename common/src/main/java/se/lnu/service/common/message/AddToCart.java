@@ -45,6 +45,13 @@ public class AddToCart {
 	
 	@Override
 	public String toString() {
-		return userEmail + " " + pet.toString() + " " + success + " " + error;
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		sb.append("\"pet\" : ").append(pet.toString()).append(",");
+		sb.append("\"success\" : ").append(success);
+		if (!success)
+			sb.append(",").append("\"error\" : \"").append(error).append("\"");
+		sb.append("}");
+		return sb.toString();
 	}
 }

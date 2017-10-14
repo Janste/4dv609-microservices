@@ -9,34 +9,46 @@ import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.messaging.handler.annotation.SendTo;
 
 import se.lnu.service.common.channels.Inventory;
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.RequestCart;
+import se.lnu.services.cart.data.CartRepository;
 
 @SpringBootApplication
 @EnableBinding(Inventory.class)
 public class Application {
-	
-	// Needs
-	// Rest API for querying contents
-	// Event listener to hear when item is added from inventory
-	// Event listener to empty when payment complete
+	private CartRepository cartRepository = new CartRepository();
 	
 	protected Logger logger = Logger.getLogger(Application.class.getName());
 	
 	@Autowired
-	Inventory inventory;
+	private Inventory inventory;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 	
 	@StreamListener(Inventory.ADD_CART_INPUT)
-	public void processAddToCart(AddToCart request) {
+	@SendTo(Inventory.ADD_CART_OUTPUT)
+	public AddToCart processAddToCart(AddToCart request) {
 		logger.info("Adding to cart: " + request);
-		request.setSuccess(true);
-		inventory.addedToCartOutput().send(MessageBuilder.withPayload(request).build());
+		if (cartRepository.addToCart(request)) {
+			request.setSuccess(true);
+		}
+		else {
+			request.setSuccess(false);
+			request.setError("Could not add to cart.");
+		}
+		return request;
+	}
+	
+	@StreamListener(Inventory.REQUEST_CART_INPUT)
+	@SendTo(Inventory.REQUEST_CART_OUTPUT)
+	public RequestCart requestCart(RequestCart request) {
+		request.setPetIDs(cartRepository.getCart(request));
+		return request;
 	}
 
 	@Bean

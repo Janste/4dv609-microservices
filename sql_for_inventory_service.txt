@@ -1,0 +1,21 @@
+Port: 3306
+Username: root
+Password: my_password
+
+
+create database inventory_service;
+
+create table Inventory (
+    Id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Type varchar(255) NOT NULL,
+    Name varchar(255) NOT NULL,
+    Description varchar(255) NOT NULL,
+    Value int NOT NULL,
+    Breed varchar(255) NOT NULL
+);
+
+insert into Inventory values (null, "Cat", "Kitty", "A cat", 12345, "Siberian");
+insert into Inventory values (null, "Cat", "Merlin", "A cat", 5, "MaineCoon");
+insert into Inventory values (null, "Cat", "Neko", "A cat", 21345, "Siberian");
+insert into Inventory values (null, "Cat", "Maurice", "A cat", 125, "MaineCoon");
+insert into Inventory values (null, "Dog", "Woof", "A dog", 1245, "Chihuaha");
