@@ -52,7 +52,7 @@ public class WebsocketSinkServer {
 	private static final Log logger = LogFactory.getLog(WebsocketSinkServer.class);
 
 	static final List<Channel> channels = Collections.synchronizedList(new ArrayList<Channel>());
-	static final Map<String, Set<String>> emailsToChannel = Collections.synchronizedMap(new HashMap<>());
+	static final Map<String, Set<String>> emailsToChannel = Collections.synchronizedMap(new HashMap<String, Set<String>>());
 
 	@Autowired
 	WebsocketSinkProperties properties;

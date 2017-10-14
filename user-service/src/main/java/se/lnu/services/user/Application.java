@@ -23,9 +23,26 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@StreamListener(Auth.REGISTER_INPUT)
-	public void processUser(User user) {
-		logger.info("Registering user: " + user);
+	@StreamListener(Auth.REGISTER_USER_INPUT)
+	public void registerUser(User user) {
+		logger.info("Registering user: " + user.toString());
+		
+		
+	}
+	
+	@StreamListener(Auth.LOGIN_USER_INPUT)
+	public void loginUser(User user) {
+		logger.info("Logging in user: " + user.toString());
+	}
+	
+	@StreamListener(Auth.CHANGE_USER_INPUT)
+	public void changeUser(User user) {
+		logger.info("Changing user: " + user.toString());
+	}
+	
+	@StreamListener(Auth.GET_USER_BY_EMAIL_INPUT)
+	public void getserByEmail(User user) {
+		logger.info("Getting user: " + user.toString());
 	}
 
 	@Bean

@@ -80,7 +80,7 @@ public class WebsocketSink {
 	}
 
 	private void addMessageToTraceRepository(Message<?> message) {
-		Map<String, Object> trace = new LinkedHashMap<>();
+		Map<String, Object> trace = new LinkedHashMap<String, Object>();
 		trace.put("type", "text");
 		trace.put("direction", "out");
 		trace.put("id", message.getHeaders().getId());

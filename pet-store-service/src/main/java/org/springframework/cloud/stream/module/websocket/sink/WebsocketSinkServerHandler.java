@@ -196,9 +196,18 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		emails.add(ctx.channel().id().toString());
 		
 		String reqType = jsonObject.get("type").getAsString();
-		switch (reqType) { //TODO others
+		switch (reqType) { 
 			case "addToCart":
 				inventoryController.addToCart(jsonObject);
+			break;
+			case "registerUser":
+				userController.registerUser(jsonObject);
+			case "loginUser":
+				userController.loginUser(jsonObject);
+			case "changeUser":
+				userController.changeUser(jsonObject);
+			case "getUserByEmail":
+				userController.getUserByEmail(jsonObject);
 			break;
 			default:
 				throw new IllegalArgumentException("Invalid type of request");
@@ -213,7 +222,7 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 
 	// add trace information for received frame
 	private void addTraceForFrame(WebSocketFrame frame, String type) {
-		Map<String, Object> trace = new LinkedHashMap<>();
+		Map<String, Object> trace = new LinkedHashMap<String, Object>();
 		trace.put("type", type);
 		trace.put("direction", "in");
 		if (frame instanceof TextWebSocketFrame) {

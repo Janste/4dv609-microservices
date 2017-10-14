@@ -1,5 +1,8 @@
 package se.lnu.service.common.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User
 {
     private String firstName;

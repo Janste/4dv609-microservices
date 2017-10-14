@@ -3,8 +3,7 @@ package se.lnu.services.user;
 import se.lnu.service.common.message.User;
 import se.lnu.service.common.JWTAuth.TokenHandler;;
 
-public class UserRepository
-{
+public class UserRepository {
 	
     public User registerUser(User user) {
     	

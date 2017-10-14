@@ -53,13 +53,19 @@
         if (socket.readyState == WebSocket.OPEN) {
             var msg = JSON.stringify({
                 "token": i++ + " ",
-                "type": "addToCart",
-                "pet" : 
+                "type": "registerUser",
+                "user" : 
                 {
-                    "@type" : "Cat",
-                    "name" : "Mew",
-                    "value" : 14124,
-                    "type" : "Siberian"
+                    "firstName" : "Robert",
+                    "secondName" : "Nilsson",
+                    "streetAddress" : "Street 12",
+                    "city" : "Stockholm",
+                    "state" : "-",
+                    "zipCode" : "12345",
+                    "country" : "Sweden",
+                    "telephone" : "987654321",
+                    "email" : "robert.nilsson@gmail.com",
+                    "password" : "my_password"
                 }
             });
             socket.send(msg);
