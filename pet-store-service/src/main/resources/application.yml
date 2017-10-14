@@ -3,11 +3,16 @@ spring:
     stream:
       bindings:
         input:
-          destination: ex.stream.out2
-          group: payment
+          destination: ex.stream.in
           binder: rabbit1
-        output:
-          destination: ex.stream.out2
+        register-ex:
+          destination: stream.register
+          binder: rabbit1
+        add-cart-ex:
+          destination: add.cart.out
+          binder: rabbit1
+        added-cart-in:
+          destination: added.cart.out
           binder: rabbit1
       binders:
         rabbit1:

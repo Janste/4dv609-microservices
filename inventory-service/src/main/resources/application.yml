@@ -2,12 +2,15 @@ spring:
   cloud:
     stream:
       bindings:
-        input:
-          destination: ex.stream.out
-          group: shipment
+        add-cart-in:
+          destination: add.cart.out
+          group: inventory
+          binder: rabbit1
+        added-cart-out:
+          destination: added.cart.out
           binder: rabbit1
         add-cart-ex:
-          destination: add.cart.out
+          destination: add.cart.out2
           binder: rabbit1
       binders:
         rabbit1:

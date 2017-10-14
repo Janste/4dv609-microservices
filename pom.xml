@@ -23,11 +23,11 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>authentication-service</module>
+		<module>pet-store-service</module>
 		<module>user-service</module>
 		<module>common</module>
 		<module>inventory-service</module>
 		<module>cart-service</module>
-		<module>payment-service</module>
+		<module>web-client</module>
 	</modules>
 </project>
