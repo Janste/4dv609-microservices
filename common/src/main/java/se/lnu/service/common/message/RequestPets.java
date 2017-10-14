@@ -23,4 +23,23 @@ public class RequestPets {
 	public List<Pet> getPets() {
 		return pets;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{ \"pets\" : [");
+		if (pets != null) {
+			boolean first = true;
+			for (Pet pet : pets) {
+				if (!first) {
+					sb.append(",");
+				}
+				else
+					first = false;
+				sb.append(pet.toString());
+			}
+		}
+		sb.append("]}");
+		return sb.toString();
+	}
 }

@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
-import se.lnu.service.common.animals.Pet;
 import se.lnu.service.common.channels.Inventory;
 import se.lnu.service.common.message.AddToCart;
 import se.lnu.service.common.message.RequestPets;
@@ -55,15 +54,10 @@ public class InventoryController {
 	
 	@StreamListener(Inventory.REQUEST_INVENTORY_INPUT)
 	public void requestInventoryInput(RequestPets pets) {
-		//TODO properly
-		String res = "";
 		String target = pets.getConnectionID();
-		for (Pet pet : pets.getPets()) {
-			res += " " + pet.toString();
-		}
 		for (Channel channel : WebsocketSinkServer.channels) {
 			if (channel.id().toString().equals(target)) {
-				channel.write(new TextWebSocketFrame(res));
+				channel.write(new TextWebSocketFrame(pets.toString()));
 				channel.flush();
 			}
 		}
@@ -71,9 +65,7 @@ public class InventoryController {
 	
 	@StreamListener(Inventory.ADDED_TO_CART_INPUT)
 	public void websocketSink(AddToCart message) {
-		//TODO properly
 		String messagePayload = message.toString();
-		System.out.println("REBOUND: " + messagePayload);
 		Set<String> channels = WebsocketSinkServer.emailsToChannel.getOrDefault(message.getUserEmail(), null);
 		if (channels != null) {
 			for (Channel channel : WebsocketSinkServer.channels) {

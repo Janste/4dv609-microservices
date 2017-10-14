@@ -52,7 +52,14 @@ public abstract class Pet {
 	
 	@Override
 	public String toString() {
-		return this.getName() + " " + this.getValue() + " " + this.getType() + " " + id;
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		sb.append("\"id\" : ").append(id).append(",");
+		sb.append("\"name\" : \"").append(name).append("\",");
+		sb.append("\"description\" : \"").append(description).append("\",");
+		sb.append("\"value\" : ").append(value);
+		sb.append("}");
+		return sb.toString();
 	}
 
 }
