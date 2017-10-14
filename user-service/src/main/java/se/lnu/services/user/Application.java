@@ -8,15 +8,17 @@ import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.messaging.handler.annotation.SendTo;
 
 import se.lnu.service.common.channels.Auth;
+import se.lnu.service.common.message.RequestUser;
 import se.lnu.service.common.message.User;
 
 @SpringBootApplication
 @EnableBinding(Auth.class)
 public class Application {
 
-	
+	private UserRepository repository = new UserRepository();
 	protected Logger logger = Logger.getLogger(Application.class.getName());
 
 	public static void main(String[] args) {
@@ -24,25 +26,61 @@ public class Application {
 	}
 
 	@StreamListener(Auth.REGISTER_USER_INPUT)
-	public void registerUser(User user) {
-		logger.info("Registering user: " + user.toString());
-		
-		
+	@SendTo(Auth.REGISTER_USER_OUTPUT)
+	public RequestUser registerUser(RequestUser request) {
+		logger.info("Registering user: " + request.getUser().toString());
+
+		if (repository.registerUser(request.getUser()) != null) {
+			request.setSuccess(true);
+		} else {
+			request.setSuccess(false);
+		}
+		return request;
 	}
 	
 	@StreamListener(Auth.LOGIN_USER_INPUT)
-	public void loginUser(User user) {
-		logger.info("Logging in user: " + user.toString());
+	@SendTo(Auth.LOGIN_USER_OUTPUT)
+	public RequestUser loginUser(RequestUser request) {
+		logger.info("Logging in user: " + request.getUser().toString());
+		
+		User user = repository.loginUser(request.getUser().getEmail(), request.getUser().getPassword());
+		
+		if (user != null) {
+			request.setSuccess(true);
+			request.setUser(user);
+		} else {
+			request.setSuccess(false);
+		}
+		return request;
 	}
 	
 	@StreamListener(Auth.CHANGE_USER_INPUT)
-	public void changeUser(User user) {
-		logger.info("Changing user: " + user.toString());
+	@SendTo(Auth.CHANGE_USER_OUTPUT)
+	public RequestUser changeUser(RequestUser request) {
+		logger.info("Changing user: " + request.getUser().toString());
+		
+		if (repository.changeUser(request.getUser())) {
+			request.setSuccess(true);
+		} else {
+			request.setSuccess(false);
+		}
+		return request;
 	}
 	
 	@StreamListener(Auth.GET_USER_BY_EMAIL_INPUT)
-	public void getserByEmail(User user) {
-		logger.info("Getting user: " + user.toString());
+	@SendTo(Auth.GET_USER_BY_EMAIL_OUTPUT)
+	public RequestUser getserByEmail(RequestUser request) {
+		logger.info("Getting user: " + request.getUser().toString());
+		
+		User user = repository.getUserByEmail(request.getUser().getEmail());
+		
+		if (user != null) {
+			request.setSuccess(true);
+			request.setUser(user);
+		} else {
+			request.setSuccess(false);
+		}
+		return request;
 	}
 
 	@Bean

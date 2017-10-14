@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
 import se.lnu.service.common.channels.Auth;
-import se.lnu.service.common.message.User;
+import se.lnu.service.common.message.RequestUser;
 
 @Controller
 @EnableBinding(Auth.class)
@@ -25,8 +25,8 @@ public class UserController {
     public void registerUser(JsonObject json) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			User user = mapper.readValue(json.getAsJsonObject("user").toString(), User.class);
-			auth.registerUserOutput().send(MessageBuilder.withPayload(user).build());
+			RequestUser request = mapper.readValue(json.toString(), RequestUser.class);
+			auth.registerUserOutput().send(MessageBuilder.withPayload(request).build());
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -39,8 +39,8 @@ public class UserController {
     public void loginUser(JsonObject json) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			User user = mapper.readValue(json.getAsJsonObject("user").toString(), User.class);
-			auth.loginUserOutput().send(MessageBuilder.withPayload(user).build());
+			RequestUser request = mapper.readValue(json.getAsJsonObject("user").toString(), RequestUser.class);
+			auth.loginUserOutput().send(MessageBuilder.withPayload(request).build());
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -53,8 +53,8 @@ public class UserController {
     public void changeUser(JsonObject json) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			User user = mapper.readValue(json.getAsJsonObject("user").toString(), User.class);
-			auth.changeUserOutput().send(MessageBuilder.withPayload(user).build());
+			RequestUser request = mapper.readValue(json.getAsJsonObject("user").toString(), RequestUser.class);
+			auth.changeUserOutput().send(MessageBuilder.withPayload(request).build());
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -67,8 +67,8 @@ public class UserController {
     public void getUserByEmail(JsonObject json) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			User user = mapper.readValue(json.getAsJsonObject("user").toString(), User.class);
-			auth.getUserByEmailOutput().send(MessageBuilder.withPayload(user).build());
+			RequestUser request = mapper.readValue(json.getAsJsonObject("user").toString(), RequestUser.class);
+			auth.getUserByEmailOutput().send(MessageBuilder.withPayload(request).build());
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {

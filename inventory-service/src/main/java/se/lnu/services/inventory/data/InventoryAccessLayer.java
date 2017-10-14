@@ -61,7 +61,7 @@ public class InventoryAccessLayer
     }
     
     public List<Pet> getCartPets(List<Integer> petIDs) {
-    	ArrayList<Pet> res = new ArrayList<>();
+    	ArrayList<Pet> res = new ArrayList<Pet>();
     	
     	try {
     		StringBuilder petQuery = new StringBuilder();

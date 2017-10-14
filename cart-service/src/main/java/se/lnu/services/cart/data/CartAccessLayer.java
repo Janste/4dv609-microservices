@@ -39,7 +39,7 @@ public class CartAccessLayer
     }
     
     public List<Integer> getCartContents(String email) {
-    	List<Integer> res = new ArrayList<>();
+    	List<Integer> res = new ArrayList<Integer>();
     	
     	try {
             String query = "SELECT * FROM CART WHERE ownerEmail = ?;";
