@@ -1,0 +1,29 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: ex.stream.in
+          binder: rabbit1
+        register-ex:
+          destination: stream.register
+          binder: rabbit1
+        add-cart-ex:
+          destination: add.cart.out
+          binder: rabbit1
+        added-cart-in:
+          destination: added.cart.out
+          binder: rabbit1
+      binders:
+        rabbit1:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: localhost
+                port: 5672
+                username: guest
+                password: guest
+                
+server:  
+  port: ${PORT:2225}
