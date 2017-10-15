@@ -11,6 +11,12 @@ spring:
         add-cart-ex:
           destination: add.cart.out
           binder: rabbit1
+        remove-cart-in:
+          destination: remove.cart.out2
+          binder: rabbit1
+        remove-cart-out:
+          destination: remove.cart.out
+          binder: rabbit1
         added-cart-in:
           destination: added.cart.out
           binder: rabbit1

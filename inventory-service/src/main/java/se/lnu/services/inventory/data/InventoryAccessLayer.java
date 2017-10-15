@@ -63,6 +63,9 @@ public class InventoryAccessLayer
     public List<Pet> getCartPets(List<Integer> petIDs) {
     	ArrayList<Pet> res = new ArrayList<Pet>();
     	
+    	if (petIDs.size() == 0)
+    		return res;
+    	
     	try {
     		StringBuilder petQuery = new StringBuilder();
     		boolean first = true;
@@ -157,6 +160,7 @@ public class InventoryAccessLayer
             	success = true;
             }
             ps.close();
+            connection.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }

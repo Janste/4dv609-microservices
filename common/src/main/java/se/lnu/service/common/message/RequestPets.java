@@ -27,7 +27,7 @@ public class RequestPets {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{ \"pets\" : [");
+		sb.append("{ \"type\" : \"requestInventory\", \"pets\" : [");
 		if (pets != null) {
 			boolean first = true;
 			for (Pet pet : pets) {
