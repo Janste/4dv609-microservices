@@ -54,7 +54,7 @@ public abstract class Pet {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		sb.append("\"@type\" : ").append(getType()).append("\",");
+		sb.append("\"@type\" : \"").append(getType()).append("\",");
 		sb.append("\"id\" : ").append(id).append(",");
 		sb.append("\"name\" : \"").append(name).append("\",");
 		sb.append("\"description\" : \"").append(description).append("\",");

@@ -6,6 +6,8 @@ var serverUrl = "ws://localhost:9292/websocket";
 var registerButtonPressed = false;
 var loginButtonPressed = false;
 var getInventoryButtonPressed = false;
+var getShoppingCartButtonPressed = false;
+var addToShoppingCartButtonPressed = false;
 
 function init() {
 	connectoToWebsocket();
@@ -32,6 +34,12 @@ function connectoToWebsocket() {
 			}
 			else if (loginButtonPressed) {
 				handleRegisterOrLoginResponse(data);
+			}
+			else if (getShoppingCartButtonPressed) {
+				handleGetShoppingCartResponse(data.pets);
+			}
+			else if (addToShoppingCartButtonPressed) {
+				console.log(data);
 			}
 			else {
 				console.log(data);
@@ -79,6 +87,7 @@ function changeViewBetweenLoggedInAndLoggedOut() {
 		document.getElementById('logoutMenuItem').style.display = "none";
 	}
 	clearInventory();
+	clearShoppingCart();
 }
 
 function register() {
@@ -136,7 +145,7 @@ function logout() {
 }
 
 function handleRegisterOrLoginResponse(data) {
-	
+	console.log(data);
 	if (data.success == true) {
 		
 		sessionStorage.setItem('token', data.user.token);
@@ -174,10 +183,6 @@ function getInventory() {
 	}
 }
 
-function clearInventory() {
-	document.getElementById("petsList").innerHTML = "";
-}
-
 function handleGetInventoryResponse(pets) {
 	
 	clearInventory();
@@ -187,7 +192,10 @@ function handleGetInventoryResponse(pets) {
 		
 		// New list item
 		var li = document.createElement("li");
-		li.appendChild(document.createTextNode("Name: " + pets[i].name + ", description: " + pets[i].description + ", price: " + pets[i].value + " SEK"));
+		
+		var pet = pets[i];
+		
+		li.appendChild(document.createTextNode("Name: " + pet.name + ", type: " + pet["@type"] + ", description: " + pet.description + ", price: " + pet.value + " SEK"));
 		li.className = "list-group-item";
 		li.style = "padding: 20px"
 		
@@ -196,6 +204,10 @@ function handleGetInventoryResponse(pets) {
 			var addToCartButton = document.createElement("button");
 			addToCartButton.innerHTML = "Add to cart";
 			addToCartButton.className = "btn btn-default pull-right";
+			
+			addToCartButton.setAttribute("petType", pet["@type"]);
+			addToCartButton.setAttribute("petId", pet.id);
+			addToCartButton.setAttribute("onclick", "addToCart(this);");
 			li.appendChild(addToCartButton);
 		}
 		
@@ -205,9 +217,96 @@ function handleGetInventoryResponse(pets) {
 	getInventoryButtonPressed = false;
 }
 
+function getShoppingCart() {
+	
+	if (getToken() == null) {
+		setShoppingCartMessage("You need to log in first before you can add items to your shopping cart.");
+		return;
+	}
+	
+	if (!window.WebSocket) {
+		return;
+	}
+	if (socket.readyState == WebSocket.OPEN) {
+
+		var msg = JSON.stringify({
+		  "type": "requestCart",
+		  "token": getToken()
+		});
+		socket.send(msg);
+		getShoppingCartButtonPressed = true;
+	} else {
+		console.log("The socket is not open.");
+	}
+}
+
+function handleGetShoppingCartResponse(pets) {
+	
+	clearShoppingCart();
+	
+	var ul = document.getElementById("shoppingCartList");
+	
+	for (var i = 0; i < pets.length; i++) {
+		
+		// New list item
+		var li = document.createElement("li");
+		li.appendChild(document.createTextNode("Name: " + pets[i].name + ", description: " + pets[i].description + ", price: " + pets[i].value + " SEK"));
+		li.className = "list-group-item";
+		li.style = "padding: 20px"
+		
+		// Append to list
+		ul.appendChild(li);	
+	}
+	
+	if (pets.length === 0) {
+		setShoppingCartMessage("There are no pets in your shopping cart");
+	}
+	
+	getShoppingCartButtonPressed = false;
+}
+
+function addToCart(data) {
+
+	var id = data.getAttribute("petid");
+	var type = data.getAttribute("pettype");
+
+	if (!window.WebSocket) {
+		return;
+	}
+	if (socket.readyState == WebSocket.OPEN) {
+
+		var msg = JSON.stringify({
+		  "type": "addToCart",
+		  "token": getToken(),
+		  "pet": {
+			  "id": id,
+			  "@type": type
+		  }
+		});
+		socket.send(msg);
+		addToShoppingCartButtonPressed = true;
+	} else {
+		console.log("The socket is not open.");
+	}
+
+}
+
 function getToken() {
 	var token = sessionStorage.getItem('token');
 	return token;
+}
+
+function clearInventory() {
+	document.getElementById("petsList").innerHTML = "";
+}
+
+function clearShoppingCart() {
+	document.getElementById("shoppingCartList").innerHTML = "";
+	setShoppingCartMessage("");
+}
+
+function setShoppingCartMessage(msg) {
+	document.getElementById('shoppingCartMessageToUser').textContent = msg;
 }
 
 function send(message) {
