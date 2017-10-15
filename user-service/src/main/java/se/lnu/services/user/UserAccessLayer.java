@@ -33,7 +33,9 @@ public class UserAccessLayer
     }
 
     public boolean registerUser(User user) {
-
+    	if (user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
+    		return false;
+    	}
         try {
             String query = "INSERT INTO USERS VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
