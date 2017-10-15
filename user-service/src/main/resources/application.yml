@@ -8,6 +8,12 @@ spring:
         register-user-ex:
           destination: register.user.out2
           binder: rabbit1
+        login-user-in:
+          destination: login.user.out
+          binder: rabbit1
+        login-user-out:
+          destination: login.user.out2
+          binder: rabbit1
       binders:
         rabbit1:
           type: rabbit

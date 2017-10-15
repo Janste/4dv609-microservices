@@ -74,16 +74,7 @@ public class UserAccessLayer
                 String passwordInDatabase = result.getString("password");
                 if (passwordInDatabase.equals(password)) {
                     user = new User();
-                    user.setFirstName(result.getString("firstName"));
-                    user.setSecondName(result.getString("secondName"));
-                    user.setStreetAddress(result.getString("streetAddress"));
-                    user.setCity(result.getString("city"));
-                    user.setState(result.getString("state"));
-                    user.setZipCode(result.getString("zipCode"));
-                    user.setCountry(result.getString("country"));
-                    user.setTelephone(result.getString("telephone"));
                     user.setEmail(result.getString("email"));
-                    user.setPassword(result.getString("password"));
                 }
             }
             result.close();

@@ -10,7 +10,6 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.support.MessageBuilder;
 
 import se.lnu.service.common.channels.Auth;
 import se.lnu.service.common.message.RequestUser;
@@ -61,6 +60,7 @@ public class Application {
 			request.setUser(user);
 		} else {
 			request.setSuccess(false);
+			request.setError("Invalid login credentials");
 		}
 		return request;
 	}

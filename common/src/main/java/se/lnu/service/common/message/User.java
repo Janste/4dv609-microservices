@@ -138,41 +138,49 @@ public class User
 			if (comma)
 				sb.append(",");
 			sb.append("\"secondName\" : \"").append(secondName).append("\"");
+			comma = true;
 		}
 		if (streetAddress != null) {
 			if (comma)
 				sb.append(",");
 			sb.append("\"streetAddress\" : \"").append(streetAddress).append("\"");
+			comma = true;
 		}
 		if (city != null) {
 			if (comma)
 				sb.append(",");
 			sb.append("\"city\" : \"").append(city).append("\"");
+			comma = true;
 		}
 		if (state != null) {
 			if (comma)
 				sb.append(",");
 			sb.append("\"state\" : \"").append(state).append("\"");
+			comma = true;
 		}
 		if (zipCode != null) {
 			if (comma)
 				sb.append(",");
 			sb.append("\"zipCode\" : \"").append(zipCode).append("\"");
+			comma = true;
 		}
 		if (country != null) {
 			if (comma)
 				sb.append(",");
 			sb.append("\"country\" : \"").append(country).append("\"");
+			comma = true;
 		}
 		if (telephone != null) {
 			if (comma)
 				sb.append(",");
 			sb.append("\"telephone\" : \"").append(telephone).append("\"");
+			comma = true;
 		}
 		if (email != null) {
 			if (comma)
 				sb.append(",");
 			sb.append("\"email\" : \"").append(email).append("\"");
+			comma = true;
 		}
 		if (token != null) {
 			if (comma)

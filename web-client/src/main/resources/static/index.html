@@ -8,92 +8,9 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="script.js"></script>
 </head>
 <body>
-<script type="text/javascript">
-    var socket;
-    var i = 0;
-    function connectoToWebsocket(url) {
-        if (!window.WebSocket) {
-            window.WebSocket = window.MozWebSocket;
-        }
-        if (window.WebSocket) {
-            socket = new WebSocket(url);
-            socket.onmessage = function (event) {
-                var ta = document.getElementById('responseText');
-                ta.value = ta.value + '\n' + event.data
-            };
-            socket.onopen = function (event) {
-                var ta = document.getElementById('responseText');
-                ta.value = "Web Socket opened!";
-                document.getElementById('message').removeAttribute("disabled");
-                document.getElementById('sendButton').removeAttribute("disabled");
-            };
-            socket.onclose = function (event) {
-                var ta = document.getElementById('responseText');
-                ta.value = ta.value + "Web Socket closed";
-            };
-        } else {
-            alert("Your browser does not support Web Socket.");
-        }
-    }
-    function send(message) {
-        if (!window.WebSocket) {
-            return;
-        }
-        if (socket.readyState == WebSocket.OPEN) {
-            /*var msg = JSON.stringify({
-                "token": i++ + " ",
-                "type": "addToCart",
-                "pet" : 
-                {
-                    "@type" : "Cat",
-                    "name" : "Mew",
-                    "value" : 14124,
-                    "type" : "Siberian",
-                    "id": i,
-                }
-            });*/
-            /*var msg = JSON.stringify({
-                "token": "test",
-                "type": "removeFromCart",
-                "pet" : 
-                {
-                    "@type" : "Cat",
-                    "name" : "Mew",
-                    "value" : 14124,
-                    "type" : "Siberian",
-                    "id": i++,
-                }
-            });*/
-            var msg = JSON.stringify({
-                "type": "register",
-                "user": {
-                    "firstName" : "TestName",
-                    "secondName" : "LastName",
-                    "streetAddress" : "1234",
-                    "city" : "vaxjo",
-                    "state" : "Kronoberg",
-                    "zipCode" : "35245",
-                    "country" : "Sweden",
-                    "telephone" : "02424",
-                    "email" : "test@test.com",
-                    "password" : "password"
-                }
-            });
-            /*var msg = JSON.stringify({
-              "type": "requestInventory"
-            });*/
-            /*var msg = JSON.stringify({
-              "type": "requestCart",
-              "token": "test"
-            });*/
-            socket.send(msg);
-        } else {
-            alert("The socket is not open.");
-        }
-    }
-</script>
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -119,6 +36,20 @@
 </nav>
 
 <div class="container-fluid text-center">    
+
+	<div class="row content">
+		<div class="col-md-8 col-md-offset-2 text-left"> 
+			<h1>Pet store</h1>
+			<p>Here you can browse and add to cart the pets you would like to buy.</p>
+			<p><button type="button" class="btn btn-primary" onclick="getInventory();">Browse pet store</button></p>
+			<ul id="petsList" class="list-group">
+
+			</ul>
+		</div>
+	</div>
+
+
+
   <div class="row content">
     <div class="col-md-8 col-md-offset-2 text-left"> 
 		<h1>Welcome</h1>

@@ -42,7 +42,7 @@ public class RequestUser {
 		sb.append("{");
 		if (success) {
 			sb.append("\"user\" : ").append(user.toString()).append(",");
-			sb.append("\"success\" :").append(success).append(",");
+			sb.append("\"success\" :").append(success);
 		}
 		else {
 			sb.append("\"success\" :").append(success).append(",");

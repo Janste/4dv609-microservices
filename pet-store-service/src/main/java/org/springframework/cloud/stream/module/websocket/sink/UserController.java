@@ -54,7 +54,7 @@ public class UserController {
     public void loginUser(JsonObject json) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			RequestUser request = mapper.readValue(json.getAsJsonObject("user").toString(), RequestUser.class);
+			RequestUser request = mapper.readValue(json.toString(), RequestUser.class);
 			auth.loginUserOutput().send(MessageBuilder.withPayload(request).build());
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -62,6 +62,17 @@ public class UserController {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+    }
+    
+    @StreamListener(Auth.LOGIN_USER_INPUT)
+    public void loginUserSink(RequestUser user) {
+    	String target = user.getChannelId();
+		for (Channel channel : WebsocketSinkServer.channels) {
+			if (channel.id().toString().equals(target)) {
+				channel.write(new TextWebSocketFrame(user.toString()));
+				channel.flush();
+			}
 		}
     }
     

@@ -190,11 +190,11 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 			return;
 		case "register":
 			jsonObject.addProperty("channelId", ctx.channel().id().toString());
-			userController.registerUser(jsonObject); //TODO won't work
+			userController.registerUser(jsonObject);
 			return;
-		case "loginUser":
+		case "login":
 			jsonObject.addProperty("channelId", ctx.channel().id().toString());
-			userController.loginUser(jsonObject); //TODO won't work
+			userController.loginUser(jsonObject);
 			return;
 		}
 		
