@@ -9,6 +9,9 @@ public interface Inventory {
 	String ADD_CART_INPUT = "add-cart-in";
 	String ADD_CART_OUTPUT = "add-cart-ex";
 	
+	String REMOVE_CART_INPUT = "remove-cart-in";
+	String REMOVE_CART_OUTPUT = "remove-cart-out";
+	
 	String ADDED_TO_CART_INPUT = "added-cart-in";
 	String ADDED_TO_CART_OUTPUT = "added-cart-out";
 	
@@ -23,6 +26,12 @@ public interface Inventory {
 	
 	@Output(Inventory.ADD_CART_OUTPUT)
 	MessageChannel addToCartOutput();
+	
+	@Input(Inventory.REMOVE_CART_INPUT)
+	SubscribableChannel removeCartInput();
+	
+	@Output(Inventory.REMOVE_CART_OUTPUT)
+	MessageChannel removeCartOutput();
 	
 	@Input(Inventory.ADDED_TO_CART_INPUT)
 	SubscribableChannel addedInput();

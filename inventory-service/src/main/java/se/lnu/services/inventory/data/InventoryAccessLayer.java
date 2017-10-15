@@ -160,6 +160,7 @@ public class InventoryAccessLayer
             	success = true;
             }
             ps.close();
+            connection.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.RemoveFromCart;
 
 public class CartAccessLayer
 {
@@ -71,10 +72,32 @@ public class CartAccessLayer
     			found = true;
     		}
     		statement.close();
+    		connection.commit();
     	} catch (Exception e) {
     		e.printStackTrace();
     	}
     	return found;
+    }
+    
+    public boolean removePet(RemoveFromCart request) {
+    	boolean success = false;
+        try {
+            String sql = "DELETE FROM CART WHERE ownerEmail = ? AND pet = ?;";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, request.getUserEmail());
+            ps.setInt(2, request.getPet().getID());
+            
+            int num = ps.executeUpdate();
+            if (num > 0) {
+            	success = true;
+            }
+            ps.close();
+            connection.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return success;
     }
 
 }

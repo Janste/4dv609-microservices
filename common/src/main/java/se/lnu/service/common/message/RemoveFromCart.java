@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import se.lnu.service.common.animals.Pet;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AddToCart {
+public class RemoveFromCart {
 	private String userEmail;
 	private Pet pet;
 	private boolean success;
@@ -47,7 +47,7 @@ public class AddToCart {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		sb.append("\"type\" : \"addToCart\",");
+		sb.append("\"type\" : \"removeFromCart\",");
 		sb.append("\"pet\" : ").append(pet.toString()).append(",");
 		sb.append("\"success\" : ").append(success);
 		if (!success)

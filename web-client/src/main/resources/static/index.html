@@ -54,13 +54,25 @@
                     "id": i,
                 }
             });*/
+            var msg = JSON.stringify({
+                "token": "test",
+                "type": "removeFromCart",
+                "pet" : 
+                {
+                    "@type" : "Cat",
+                    "name" : "Mew",
+                    "value" : 14124,
+                    "type" : "Siberian",
+                    "id": i++,
+                }
+            });
             /*var msg = JSON.stringify({
               "type": "requestInventory"
             });*/
-            var msg = JSON.stringify({
+            /*var msg = JSON.stringify({
               "type": "requestCart",
               "token": "test"
-            });
+            });*/
             socket.send(msg);
         } else {
             alert("The socket is not open.");

@@ -36,7 +36,7 @@ public class RequestCart {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{ \"pets\" : [");
+		sb.append("{ \"type\" : \"requestCart\", \"pets\" : [");
 		if (pets != null) {
 			boolean first = true;
 			for (Pet pet : pets) {

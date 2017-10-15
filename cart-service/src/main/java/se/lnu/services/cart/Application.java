@@ -13,6 +13,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 
 import se.lnu.service.common.channels.Inventory;
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.RemoveFromCart;
 import se.lnu.service.common.message.RequestCart;
 import se.lnu.services.cart.data.CartRepository;
 
@@ -48,6 +49,20 @@ public class Application {
 	@SendTo(Inventory.REQUEST_CART_OUTPUT)
 	public RequestCart requestCart(RequestCart request) {
 		request.setPetIDs(cartRepository.getCart(request));
+		return request;
+	}
+	
+	@StreamListener(Inventory.REMOVE_CART_INPUT)
+	@SendTo(Inventory.REMOVE_CART_OUTPUT)
+	public RemoveFromCart removeFromCart(RemoveFromCart request) {
+		logger.info("Removing from cart: " + request);
+		if (cartRepository.removeFromCart(request)) {
+			request.setSuccess(true);
+		}
+		else {
+			request.setSuccess(false);
+			request.setError("Could not remove from cart.");
+		}
 		return request;
 	}
 

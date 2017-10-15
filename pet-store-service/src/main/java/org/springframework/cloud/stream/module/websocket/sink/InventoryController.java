@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 
 import se.lnu.service.common.channels.Inventory;
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.RemoveFromCart;
 import se.lnu.service.common.message.RequestCart;
 import se.lnu.service.common.message.RequestPets;
 
@@ -43,6 +44,21 @@ public class InventoryController {
 			e.printStackTrace();
 		}
     }
+	
+	public void removeFromCart(JsonObject json) {
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			RemoveFromCart request = mapper.readValue(json.toString(), RemoveFromCart.class);
+			System.out.println(request.toString());
+			inventory.removeCartOutput().send(MessageBuilder.withPayload(request).build());
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void requestInventory(String connectionId) {
 		RequestPets pets = new RequestPets();
@@ -82,6 +98,20 @@ public class InventoryController {
 	
 	@StreamListener(Inventory.ADDED_TO_CART_INPUT)
 	public void websocketSink(AddToCart message) {
+		String messagePayload = message.toString();
+		Set<String> channels = WebsocketSinkServer.emailsToChannel.getOrDefault(message.getUserEmail(), null);
+		if (channels != null) {
+			for (Channel channel : WebsocketSinkServer.channels) {
+				if (channels.contains(channel.id().toString())) {
+					channel.write(new TextWebSocketFrame(messagePayload));
+					channel.flush();
+				}
+			}
+		}
+	}
+	
+	@StreamListener(Inventory.REMOVE_CART_INPUT)
+	public void websocketSink(RemoveFromCart message) {
 		String messagePayload = message.toString();
 		Set<String> channels = WebsocketSinkServer.emailsToChannel.getOrDefault(message.getUserEmail(), null);
 		if (channels != null) {

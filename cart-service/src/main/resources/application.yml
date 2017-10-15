@@ -9,6 +9,12 @@ spring:
         added-cart-out:
           destination: added.cart.out
           binder: rabbit1
+        remove-cart-in:
+          destination: remove.cart.out
+          binder: rabbit1
+        remove-cart-out:
+          destination: remove.cart.out2
+          binder: rabbit1
         output:
           destination: ex.stream.out2
           binder: rabbit1
