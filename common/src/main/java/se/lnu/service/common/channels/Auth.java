@@ -37,7 +37,7 @@ public interface Auth {
 	@Output(Auth.CHANGE_USER_OUTPUT)
 	MessageChannel changeUserOutput();
 	
-	@Output(Auth.GET_USER_BY_EMAIL_INPUT)
+	@Input(Auth.GET_USER_BY_EMAIL_INPUT)
 	MessageChannel getUserByEmailInput();
 	
 	@Output(Auth.GET_USER_BY_EMAIL_OUTPUT)
