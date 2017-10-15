@@ -65,6 +65,7 @@ public class CartAccessLayer
     	try {
     		String query = "INSERT INTO CART VALUES (?, ?, ?);";
     		PreparedStatement statement = connection.prepareStatement(query);
+    		statement.setInt(1, 0);
     		statement.setString(2, request.getUserEmail());
     		statement.setInt(3, request.getPet().getID());
     		int result = statement.executeUpdate();

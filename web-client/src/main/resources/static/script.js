@@ -36,6 +36,7 @@ function connectoToWebsocket() {
 				handleRegisterOrLoginResponse(data);
 			}
 			else if (getShoppingCartButtonPressed) {
+				console.log(data);
 				handleGetShoppingCartResponse(data.pets);
 			}
 			else if (addToShoppingCartButtonPressed) {
@@ -195,7 +196,7 @@ function handleGetInventoryResponse(pets) {
 		
 		var pet = pets[i];
 		
-		li.appendChild(document.createTextNode("Name: " + pet.name + ", type: " + pet["@type"] + ", description: " + pet.description + ", price: " + pet.value + " SEK"));
+		li.appendChild(document.createTextNode("Name: " + pet.name + ", type: " + pet.type + ", description: " + pet.description + ", price: " + pet.value + " SEK"));
 		li.className = "list-group-item";
 		li.style = "padding: 20px"
 		
@@ -205,8 +206,12 @@ function handleGetInventoryResponse(pets) {
 			addToCartButton.innerHTML = "Add to cart";
 			addToCartButton.className = "btn btn-default pull-right";
 			
-			addToCartButton.setAttribute("petType", pet["@type"]);
-			addToCartButton.setAttribute("petId", pet.id);
+			addToCartButton.setAttribute("pettype", pet.type);
+			addToCartButton.setAttribute("atpettype", pet["@type"]);
+			addToCartButton.setAttribute("petid", pet.id);
+			addToCartButton.setAttribute("petname", pet.name);
+			addToCartButton.setAttribute("petvalue", pet.value);
+			
 			addToCartButton.setAttribute("onclick", "addToCart(this);");
 			li.appendChild(addToCartButton);
 		}
@@ -248,9 +253,11 @@ function handleGetShoppingCartResponse(pets) {
 	
 	for (var i = 0; i < pets.length; i++) {
 		
+		var pet = pets[i];
+		
 		// New list item
 		var li = document.createElement("li");
-		li.appendChild(document.createTextNode("Name: " + pets[i].name + ", description: " + pets[i].description + ", price: " + pets[i].value + " SEK"));
+		li.appendChild(document.createTextNode("Name: " + pet.name + ", type: " + pet.type + ", description: " + pet.description + ", price: " + pet.value + " SEK"));
 		li.className = "list-group-item";
 		li.style = "padding: 20px"
 		
@@ -269,6 +276,9 @@ function addToCart(data) {
 
 	var id = data.getAttribute("petid");
 	var type = data.getAttribute("pettype");
+	var attype = data.getAttribute("atpettype");
+	var name = data.getAttribute("petname");
+	var value = data.getAttribute("petvalue");
 
 	if (!window.WebSocket) {
 		return;
@@ -279,8 +289,11 @@ function addToCart(data) {
 		  "type": "addToCart",
 		  "token": getToken(),
 		  "pet": {
-			  "id": id,
-			  "@type": type
+			  "@type": attype,
+			  "name": name,
+			  "value": value,
+			  "type": type,
+			  "id": id
 		  }
 		});
 		socket.send(msg);
