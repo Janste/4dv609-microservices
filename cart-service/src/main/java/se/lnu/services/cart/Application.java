@@ -32,7 +32,7 @@ public class Application {
 	}
 	
 	@StreamListener(Inventory.ADD_CART_INPUT)
-	@SendTo(Inventory.ADD_CART_OUTPUT)
+	@SendTo(Inventory.ADDED_TO_CART_OUTPUT)
 	public AddToCart processAddToCart(AddToCart request) {
 		logger.info("Adding to cart: " + request);
 		if (cartRepository.addToCart(request)) {
