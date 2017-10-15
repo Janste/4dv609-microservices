@@ -104,9 +104,30 @@ function send(message) {
 			"type": "login",
 			"user" : {
 				"email" : "test@test.com",
-				"password" : "password"
+				"password" : "my_password"
 			}
 		});
+
+		/*var msg = JSON.stringify({
+			"type": "getUser",
+			"token" : "test@test.com"
+		});*/
+
+		/*var msg = JSON.stringify({
+			"type": "updateUser",
+			"token" : "test@test.com",
+			"user" : {
+				"firstName" : "Robert",
+				"secondName" : "Nilsson",
+				"streetAddress" : "Street 12",
+				"city" : "Stockholm",
+				"state" : "-",
+				"zipCode" : "12345",
+				"country" : "Sweden",
+				"telephone" : "987654321",
+				"email" : "test@test.com"
+			}
+		});*/
 		
 		/*
 			var msg = JSON.stringify({

@@ -28,26 +28,99 @@
       </ul>
 	  <ul class="nav navbar-nav navbar-right">
 		<li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> Shopping cart</a></li>
-		<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Register</a></li>
+		<li id="loginMenuItem"><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        <li id="registerMenuItem"><a href="#"><span class="glyphicon glyphicon-log-in"></span> Register</a></li>
+		<li id="logoutMenuItem"><a href="" onclick="logout();"><span class="glyphicon glyphicon-log-in"></span> Log out</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
 <div class="container-fluid text-center">    
-
-	<div class="row content">
-		<div class="col-md-8 col-md-offset-2 text-left"> 
-			<h1>Pet store</h1>
-			<p>Here you can browse and add to cart the pets you would like to buy.</p>
-			<p><button type="button" class="btn btn-primary" onclick="getInventory();">Browse pet store</button></p>
-			<ul id="petsList" class="list-group">
-
-			</ul>
+	<div id="registerDiv" class="row content">
+		<div class="col-md-6 col-md-offset-2 text-left"> 
+			<h1>Register</h1>
+			<form onsubmit="return false;">
+				<div class="form-group">
+					<label>First name:</label>
+					<input class="form-control" id="registerFirstName">
+				</div>
+				<div class="form-group">
+					<label>Second name:</label>
+					<input class="form-control" id="registerSecondName">
+				</div>
+				<div class="form-group">
+					<label>Street address:</label>
+					<input class="form-control" id="registerStreetAddress">
+				</div>
+				<div class="form-group">
+					<label>City:</label>
+					<input class="form-control" id="registerCity">
+				</div>
+				<div class="form-group">
+					<label>State:</label>
+					<input class="form-control" id="registerState">
+				</div>
+				<div class="form-group">
+					<label>Zip code:</label>
+					<input class="form-control" id="registerZipCode">
+				</div>
+				<div class="form-group">
+					<label>Country:</label>
+					<input class="form-control" id="registerCountry">
+				</div>
+				<div class="form-group">
+					<label>Telephone:</label>
+					<input class="form-control" id="registerTelephone">
+				</div>
+				<div class="form-group">
+					<label for="email">Email address:</label>
+					<input type="email" class="form-control" id="registerEmail">
+				</div>
+				<div class="form-group">
+					<label for="pwd">Password:</label>
+					<input type="password" class="form-control" id="registerPassword">
+				</div>
+				<button type="submit" class="btn btn-success" onclick="register();">Submit</button>
+			</form>
+			<label id="registerMessageToUser" style="color: red;"></label>
 		</div>
 	</div>
+	
+	<div id="loginDiv" class="row content">
+		<div class="col-md-6 col-md-offset-2 text-left"> 
+			<h1>Login</h1>
+			<form onsubmit="return false;">
+				<div class="form-group">
+					<label for="email">Email address:</label>
+					<input type="email" class="form-control" id="loginEmail">
+				</div>
+				<div class="form-group">
+					<label for="pwd">Password:</label>
+					<input type="password" class="form-control" id="loginPassword">
+				</div>
+				<button type="submit" class="btn btn-success" onclick="login();">Submit</button>
+			</form>
+			<label id="loginMessageToUser" style="color: red;"></label>
+		</div>
+	</div>
+	
 
+	<div class="col-md-8 col-md-offset-2 text-left"> 
+		<h1>Pet store</h1>
+		<p>Here you can browse and add to cart the pets you would like to buy.</p>
+		<p><button type="button" class="btn btn-primary" onclick="getInventory();">Browse pet store</button></p>
+		<ul id="petsList" class="list-group">
+
+		</ul>
+	</div>
+
+
+
+	<div class="col-md-8 col-md-offset-2 text-left"> 
+		<h1>Shopping cart</h1>
+		<p>Here you can see what pets you have in your shopping cart.</p>
+	</div>
 
 
   <div class="row content">
