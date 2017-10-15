@@ -100,6 +100,21 @@ function send(message) {
 		  "type": "requestInventory"
 		});
 		
+		/*
+			var msg = JSON.stringify({
+                "token": "test",
+                "type": "removeFromCart",
+                "pet" : 
+                {
+                    "@type" : "Cat",
+                    "name" : "Mew",
+                    "value" : 14124,
+                    "type" : "Siberian",
+                    "id": i++,
+                }
+            });
+		*/
+		
 		
 		/*
 		var msg = JSON.stringify({
