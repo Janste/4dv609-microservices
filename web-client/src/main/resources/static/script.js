@@ -100,20 +100,20 @@ function send(message) {
 		  "type": "requestInventory"
 		});*/
 
-		/*var msg = JSON.stringify({
+		var msg = JSON.stringify({
 			"type": "login",
 			"user" : {
 				"email" : "test@test.com",
-				"password" : "password"
+				"password" : "my_password"
 			}
-		});*/
+		});
 
 		/*var msg = JSON.stringify({
 			"type": "getUser",
 			"token" : "test@test.com"
 		});*/
 
-		var msg = JSON.stringify({
+		/*var msg = JSON.stringify({
 			"type": "updateUser",
 			"token" : "test@test.com",
 			"user" : {
@@ -127,7 +127,7 @@ function send(message) {
 				"telephone" : "987654321",
 				"email" : "test@test.com"
 			}
-		});
+		});*/
 		
 		/*
 			var msg = JSON.stringify({
