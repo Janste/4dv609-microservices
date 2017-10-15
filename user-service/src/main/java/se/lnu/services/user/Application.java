@@ -74,6 +74,7 @@ public class Application {
 			request.setSuccess(true);
 		} else {
 			request.setSuccess(false);
+			request.setError("Unable to update user info");
 		}
 		return request;
 	}

@@ -81,7 +81,7 @@ public class UserController {
     public void changeUser(JsonObject json) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			RequestUser request = mapper.readValue(json.getAsJsonObject("user").toString(), RequestUser.class);
+			RequestUser request = mapper.readValue(json.toString(), RequestUser.class);
 			auth.changeUserOutput().send(MessageBuilder.withPayload(request).build());
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -89,6 +89,19 @@ public class UserController {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+    }
+    
+    @StreamListener(Auth.CHANGE_USER_INPUT)
+    public void changeUserSink(RequestUser user) {
+    	Set<String> channels = WebsocketSinkServer.emailsToChannel.getOrDefault(user.getUser().getEmail(), null);
+		if (channels != null) {
+			for (Channel channel : WebsocketSinkServer.channels) {
+				if (channels.contains(channel.id().toString())) {
+					channel.write(new TextWebSocketFrame(user.toString()));
+					channel.flush();
+				}
+			}
 		}
     }
     

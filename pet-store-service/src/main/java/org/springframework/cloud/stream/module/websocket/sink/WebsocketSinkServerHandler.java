@@ -233,7 +233,7 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		case "getUser":
 			userController.getUser(jsonObject);
 			break;
-		case "updateUser": // TODO FIX
+		case "updateUser":
 			userController.changeUser(jsonObject);
 			break;
 		case "removeFromCart":
@@ -242,11 +242,6 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		default:
 			throw new IllegalArgumentException("Invalid type of request");
 		}
-		//User user = new User();
-		//user.setFirstName(frame.text());
-		//userController.registerUser(user);
-		//auth.output().send(MessageBuilder.withPayload(user).build());
-		//ctx.channel().write(new TextWebSocketFrame("Echo: " + frame.text()));
 	}
 
 	// add trace information for received frame

@@ -89,7 +89,9 @@ public class UserAccessLayer
     public boolean changeUser(User user) {
 
         try {
-            String query = "UPDATE Users " +
+        	String query;
+        	if (user.getPassword() != null) {
+        		query = "UPDATE Users " +
                     "SET " +
                         "FirstName = ?, " +
                         "SecondName = ?, " +
@@ -102,6 +104,21 @@ public class UserAccessLayer
                         "Email = ?, " +
                         "Password = ? " +
                     "WHERE Email = ?;";
+        	}
+        	else {
+        		query = "UPDATE Users " +
+                    "SET " +
+                        "FirstName = ?, " +
+                        "SecondName = ?, " +
+                        "StreetAddress = ?, " +
+                        "City = ?, " +
+                        "State = ?, " +
+                        "ZipCode = ?, " +
+                        "Country = ?, " +
+                        "Telephone =?, " +
+                        "Email = ? " +
+                    "WHERE Email = ?;";
+        	}
 
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setString(1, user.getFirstName());
@@ -113,8 +130,14 @@ public class UserAccessLayer
             ps.setString(7, user.getCountry());
             ps.setString(8, user.getTelephone());
             ps.setString(9, user.getEmail());
-            ps.setString(10, user.getPassword());
-            ps.setString(11, user.getEmail());
+            
+            if (user.getPassword() != null) {
+            	ps.setString(10, user.getPassword());
+            	ps.setString(11, user.getEmail());
+            }
+            else {
+            	ps.setString(10, user.getEmail());
+            }
             ps.executeUpdate();
             ps.close();
             connection.commit();
