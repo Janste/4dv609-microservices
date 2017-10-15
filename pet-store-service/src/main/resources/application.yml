@@ -5,8 +5,11 @@ spring:
         input:
           destination: ex.stream.in
           binder: rabbit1
-        register-ex:
-          destination: stream.register
+        register-user-in:
+          destination: register.user.out2
+          binder: rabbit1
+        register-user-ex:
+          destination: register.user.out
           binder: rabbit1
         add-cart-ex:
           destination: add.cart.out

@@ -2,6 +2,7 @@ package se.lnu.services.user;
 
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
@@ -9,6 +10,7 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.support.MessageBuilder;
 
 import se.lnu.service.common.channels.Auth;
 import se.lnu.service.common.message.RequestUser;
@@ -21,6 +23,9 @@ public class Application {
 	private UserRepository repository = new UserRepository();
 	protected Logger logger = Logger.getLogger(Application.class.getName());
 
+	@Autowired
+	private Auth auth;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
@@ -30,10 +35,16 @@ public class Application {
 	public RequestUser registerUser(RequestUser request) {
 		logger.info("Registering user: " + request.getUser().toString());
 
-		if (repository.registerUser(request.getUser()) != null) {
+		User user = repository.registerUser(request.getUser());	
+		if (user != null) {
+			User out = new User();
+			out.setToken(user.getToken());
+			out.setEmail(user.getEmail());
 			request.setSuccess(true);
+			request.setUser(out);
 		} else {
 			request.setSuccess(false);
+			request.setError("Could not register user");
 		}
 		return request;
 	}

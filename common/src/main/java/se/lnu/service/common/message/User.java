@@ -124,14 +124,62 @@ public class User
 	public void setToken(String token) {
 		this.token = token;
 	}
-    
+	
     @Override
 	public String toString() {
-		return firstName + " " + secondName + "\n" +
-				streetAddress + "\n" +
-				zipCode + " " + state + " " + city + "\n" + 
-				country + "\n" +
-				telephone + "\n" +
-				email; 
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		boolean comma = false;
+		if (firstName != null) {
+			sb.append("\"firstName\" : \"").append(firstName).append("\"");
+			comma = true;
+		}
+		if (secondName != null) {
+			if (comma)
+				sb.append(",");
+			sb.append("\"secondName\" : \"").append(secondName).append("\"");
+		}
+		if (streetAddress != null) {
+			if (comma)
+				sb.append(",");
+			sb.append("\"streetAddress\" : \"").append(streetAddress).append("\"");
+		}
+		if (city != null) {
+			if (comma)
+				sb.append(",");
+			sb.append("\"city\" : \"").append(city).append("\"");
+		}
+		if (state != null) {
+			if (comma)
+				sb.append(",");
+			sb.append("\"state\" : \"").append(state).append("\"");
+		}
+		if (zipCode != null) {
+			if (comma)
+				sb.append(",");
+			sb.append("\"zipCode\" : \"").append(zipCode).append("\"");
+		}
+		if (country != null) {
+			if (comma)
+				sb.append(",");
+			sb.append("\"country\" : \"").append(country).append("\"");
+		}
+		if (telephone != null) {
+			if (comma)
+				sb.append(",");
+			sb.append("\"telephone\" : \"").append(telephone).append("\"");
+		}
+		if (email != null) {
+			if (comma)
+				sb.append(",");
+			sb.append("\"email\" : \"").append(email).append("\"");
+		}
+		if (token != null) {
+			if (comma)
+				sb.append(",");
+			sb.append("\"token\" : \"").append(token).append("\"");
+		}
+		sb.append("}");
+		return sb.toString();
 	}
 }

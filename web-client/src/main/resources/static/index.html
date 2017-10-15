@@ -54,7 +54,7 @@
                     "id": i,
                 }
             });*/
-            var msg = JSON.stringify({
+            /*var msg = JSON.stringify({
                 "token": "test",
                 "type": "removeFromCart",
                 "pet" : 
@@ -64,6 +64,21 @@
                     "value" : 14124,
                     "type" : "Siberian",
                     "id": i++,
+                }
+            });*/
+            var msg = JSON.stringify({
+                "type": "register",
+                "user": {
+                    "firstName" : "TestName",
+                    "secondName" : "LastName",
+                    "streetAddress" : "1234",
+                    "city" : "vaxjo",
+                    "state" : "Kronoberg",
+                    "zipCode" : "35245",
+                    "country" : "Sweden",
+                    "telephone" : "02424",
+                    "email" : "test@test.com",
+                    "password" : "password"
                 }
             });
             /*var msg = JSON.stringify({

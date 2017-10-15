@@ -1,9 +1,13 @@
 package org.springframework.cloud.stream.module.websocket.sink;
 
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Controller;
 
@@ -35,6 +39,17 @@ public class UserController {
 			e.printStackTrace();
 		}
     }
+    
+    @StreamListener(Auth.REGISTER_USER_INPUT)
+    public void registerUserSink(RequestUser user) {
+    	String target = user.getChannelId();
+		for (Channel channel : WebsocketSinkServer.channels) {
+			if (channel.id().toString().equals(target)) {
+				channel.write(new TextWebSocketFrame(user.toString()));
+				channel.flush();
+			}
+		}
+    }
 
     public void loginUser(JsonObject json) {
 		try {
@@ -64,7 +79,7 @@ public class UserController {
 		}
     }
     
-    public void getUserByEmail(JsonObject json) {
+    public void getUser(JsonObject json) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			RequestUser request = mapper.readValue(json.getAsJsonObject("user").toString(), RequestUser.class);

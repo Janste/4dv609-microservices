@@ -2,12 +2,11 @@ spring:
   cloud:
     stream:
       bindings:
-        register-in:
-          destination: stream.register
-          group: user
+        register-user-in:
+          destination: register.user.out
           binder: rabbit1
-        output:
-          destination: ex.stream.out2
+        register-user-ex:
+          destination: register.user.out2
           binder: rabbit1
       binders:
         rabbit1:

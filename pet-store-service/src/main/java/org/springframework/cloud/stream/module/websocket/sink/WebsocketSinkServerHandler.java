@@ -178,7 +178,6 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		}
 
 		addTraceForFrame(frame, "text");
-		//TODO CHECK TOKEN AUTH HERE AND DECIDE ON REQUEST TYPE
 		
 		JsonObject jsonObject = new JsonParser().parse(frame.text()).getAsJsonObject();
 			
@@ -189,17 +188,30 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		case "requestInventory":
 			inventoryController.requestInventory(ctx.channel().id().toString());
 			return;
-		case "registerUser":
+		case "register":
+			jsonObject.addProperty("channelId", ctx.channel().id().toString());
 			userController.registerUser(jsonObject); //TODO won't work
-			break;
+			return;
 		case "loginUser":
+			jsonObject.addProperty("channelId", ctx.channel().id().toString());
 			userController.loginUser(jsonObject); //TODO won't work
-			break;
+			return;
 		}
 		
 		// Others do
+		if (!jsonObject.has("token")) {
+			ctx.channel().write(new TextWebSocketFrame("{ \"error\": \"Not logged in.\" }"));
+			return;
+		}
 		String token = jsonObject.get("token").getAsString();
-		String email = token; //TODO
+		
+		//if (!jsonObject.has("token")) {
+		// TODO if token not valid
+		//	ctx.channel().write(new TextWebSocketFrame("{ \"error\": \"Invalid token.\" }"));
+		//	return;
+		//}
+		
+		String email = token; //TODO get from token
 		jsonObject.addProperty("userEmail", email);
 		Set<String> emails;
 		if (!WebsocketSinkServer.emailsToChannel.containsKey(email)) {
@@ -218,7 +230,10 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		case "requestCart":
 			inventoryController.requestCart(email);
 			break;
-		case "changeUser":
+		case "requestUser": //TODO FIX
+			userController.getUser(jsonObject);
+			break;
+		case "changeUser": // TODO FIX
 			userController.changeUser(jsonObject);
 			break;
 		case "removeFromCart":

@@ -10,14 +10,14 @@ public interface Auth {
 	String REGISTER_USER_INPUT = "register-user-in";
 	String REGISTER_USER_OUTPUT = "register-user-ex";
 	
-	String LOGIN_USER_INPUT = "login-user-ex";
-	String LOGIN_USER_OUTPUT = "login-user-ex";
+	String LOGIN_USER_INPUT = "login-user-in";
+	String LOGIN_USER_OUTPUT = "login-user-out";
 	
-	String CHANGE_USER_INPUT = "change-user-ex";
-	String CHANGE_USER_OUTPUT = "change-user-ex";
+	String CHANGE_USER_INPUT = "change-user-in";
+	String CHANGE_USER_OUTPUT = "change-user-out";
 	
-	String GET_USER_BY_EMAIL_INPUT = "get-user-email-ex";
-	String GET_USER_BY_EMAIL_OUTPUT = "get-user-email-ex";
+	String GET_USER_BY_EMAIL_INPUT = "get-user-in";
+	String GET_USER_BY_EMAIL_OUTPUT = "get-user-out";
 	
 	@Input(Auth.REGISTER_USER_INPUT)
 	SubscribableChannel registerUserInput();
@@ -38,7 +38,7 @@ public interface Auth {
 	MessageChannel changeUserOutput();
 	
 	@Input(Auth.GET_USER_BY_EMAIL_INPUT)
-	MessageChannel getUserByEmailInput();
+	SubscribableChannel getUserByEmailInput();
 	
 	@Output(Auth.GET_USER_BY_EMAIL_OUTPUT)
 	MessageChannel getUserByEmailOutput();

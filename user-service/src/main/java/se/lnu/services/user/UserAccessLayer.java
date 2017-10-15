@@ -38,6 +38,7 @@ public class UserAccessLayer
             String query = "INSERT INTO USERS VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
             PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, 0);
             ps.setString(2, user.getFirstName());
             ps.setString(3, user.getSecondName());
             ps.setString(4, user.getStreetAddress());
