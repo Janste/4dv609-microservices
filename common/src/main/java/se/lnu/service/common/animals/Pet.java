@@ -50,11 +50,14 @@ public abstract class Pet {
 	
 	public abstract String getType();
 	
+	public abstract String getCastType();
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		sb.append("\"@type\" : \"").append(getType()).append("\",");
+		sb.append("\"@type\" : \"").append(getCastType()).append("\",");
+		sb.append("\"type\" : \"").append(getType()).append("\",");
 		sb.append("\"id\" : ").append(id).append(",");
 		sb.append("\"name\" : \"").append(name).append("\",");
 		sb.append("\"description\" : \"").append(description).append("\",");

@@ -23,4 +23,9 @@ public class Dog extends Pet {
 		Chihuaha
 	}
 
+	@Override
+	public String getCastType() {
+		return "Dog";
+	}
+
 }

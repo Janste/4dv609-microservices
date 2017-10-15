@@ -23,4 +23,9 @@ public class Cat extends Pet {
 		Siberian,
 		MaineCoon
 	}
+
+	@Override
+	public String getCastType() {
+		return "Cat";
+	}
 }
