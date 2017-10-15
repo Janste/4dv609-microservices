@@ -3,9 +3,12 @@ window.onload = init;
 var socket;
 var serverUrl = "ws://localhost:9292/websocket";
 
+var registerButtonPressed = false;
+var loginButtonPressed = false;
 
 function init() {
 	connectoToWebsocket();
+	changeViewBetweenLoggedInAndLoggedOut();
 }
 
 function connectoToWebsocket() {
@@ -22,6 +25,15 @@ function connectoToWebsocket() {
 			
 			if ('pets' in data) {
 				populatePetsList(data.pets);
+			}
+			else if (registerButtonPressed) {
+				handleRegisterOrLoginResponse(data);
+			}
+			else if (loginButtonPressed) {
+				handleRegisterOrLoginResponse(data);
+			}
+			else {
+				console.log(data);
 			}
 			
 
@@ -46,6 +58,103 @@ function connectoToWebsocket() {
 	} else {
 		alert("Your browser does not support Web Socket.");
 	}
+}
+
+function changeViewBetweenLoggedInAndLoggedOut() {
+	
+	var token = sessionStorage.getItem('token');
+	
+	if (token != null) {
+		document.getElementById('registerDiv').style.display = "none";
+		document.getElementById('loginDiv').style.display = "none";
+		document.getElementById('registerMenuItem').style.display = "none";
+		document.getElementById('loginMenuItem').style.display = "none";
+		document.getElementById('logoutMenuItem').style.display = "inline";
+	} else {
+		document.getElementById('registerDiv').style.display = "inline";
+		document.getElementById('loginDiv').style.display = "inline";
+		document.getElementById('registerMenuItem').style.display = "inline";
+		document.getElementById('loginMenuItem').style.display = "inline";
+		document.getElementById('logoutMenuItem').style.display = "none";
+	}
+	
+}
+
+function register() {
+	if (!window.WebSocket) {
+		return;
+	}
+	if (socket.readyState == WebSocket.OPEN) {
+
+		var msg = JSON.stringify({
+			"type": "register",
+			"user" : 
+			{
+				"firstName" : document.getElementById('registerFirstName').value,
+				"secondName" : document.getElementById('registerSecondName').value,
+				"streetAddress" : document.getElementById('registerStreetAddress').value,
+				"city" : document.getElementById('registerCity').value,
+				"state" : document.getElementById('registerState').value,
+				"zipCode" : document.getElementById('registerZipCode').value,
+				"country" : document.getElementById('registerCountry').value,
+				"telephone" : document.getElementById('registerTelephone').value,
+				"email" : document.getElementById('registerEmail').value,
+				"password" : document.getElementById('registerPassword').value
+			}
+		});
+		socket.send(msg);
+		registerButtonPressed = true;
+	} else {
+		console.log("The socket is not open.");
+	}
+}
+
+function login() {
+		if (!window.WebSocket) {
+		return;
+	}
+	if (socket.readyState == WebSocket.OPEN) {
+
+		var msg = JSON.stringify({
+			"type": "login",
+			"user" : 
+			{
+				"email" : document.getElementById('loginEmail').value,
+				"password" : document.getElementById('loginPassword').value
+			}
+		});
+		socket.send(msg);
+		loginButtonPressed = true;
+	} else {
+		console.log("The socket is not open.");
+	}
+}
+
+function logout() {
+	sessionStorage.clear();
+}
+
+function handleRegisterOrLoginResponse(data) {
+	
+	if (data.success == true) {
+		
+		sessionStorage.setItem('token', data.user.token);
+		sessionStorage.setItem('email', data.user.email);
+		
+	} 
+	else {
+		if (registerButtonPressed) {
+			document.getElementById('registerMessageToUser').style.color = "red";
+			document.getElementById('registerMessageToUser').textContent = data.error;
+		}
+		else if (loginButtonPressed) {
+			document.getElementById('loginMessageToUser').style.color = "red";
+			document.getElementById('loginMessageToUser').textContent = data.error;
+		}
+	}
+	registerButtonPressed = false;
+	loginButtonPressed = false;
+	changeViewBetweenLoggedInAndLoggedOut();
 }
 
 function getInventory() {
@@ -104,30 +213,9 @@ function send(message) {
 			"type": "login",
 			"user" : {
 				"email" : "test@test.com",
-				"password" : "my_password"
+				"password" : "password"
 			}
 		});
-
-		/*var msg = JSON.stringify({
-			"type": "getUser",
-			"token" : "test@test.com"
-		});*/
-
-		/*var msg = JSON.stringify({
-			"type": "updateUser",
-			"token" : "test@test.com",
-			"user" : {
-				"firstName" : "Robert",
-				"secondName" : "Nilsson",
-				"streetAddress" : "Street 12",
-				"city" : "Stockholm",
-				"state" : "-",
-				"zipCode" : "12345",
-				"country" : "Sweden",
-				"telephone" : "987654321",
-				"email" : "test@test.com"
-			}
-		});*/
 		
 		/*
 			var msg = JSON.stringify({
