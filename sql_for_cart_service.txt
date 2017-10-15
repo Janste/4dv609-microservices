@@ -8,5 +8,6 @@ create database cart_service;
 create table Cart (
     Id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     OwnerEmail varchar(255) NOT NULL,
-    Pet int NOT NULL
+    Pet int NOT NULL,
+    UNIQUE KEY `id_cart` (`OwnerEmail`,`Pet`)
 );
