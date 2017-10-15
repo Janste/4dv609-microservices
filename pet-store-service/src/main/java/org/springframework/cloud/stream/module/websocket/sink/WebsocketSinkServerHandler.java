@@ -40,6 +40,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import se.lnu.service.common.JWTAuth.TokenHandler;
 import se.lnu.service.common.channels.Auth;
 import se.lnu.service.common.message.User;
 import io.netty.buffer.ByteBuf;
@@ -205,13 +206,12 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		}
 		String token = jsonObject.get("token").getAsString();
 		
-		//if (!jsonObject.has("token")) {
-		// TODO if token not valid
-		//	ctx.channel().write(new TextWebSocketFrame("{ \"error\": \"Invalid token.\" }"));
-		//	return;
-		//}
+		String email = TokenHandler.validateTokenAndGetEmail(token);
+		if (email == null) {
+			ctx.channel().write(new TextWebSocketFrame("{ \"error\": \"Invalid token.\" }"));
+			return;
+		}
 		
-		String email = token; //TODO get from token
 		jsonObject.addProperty("userEmail", email);
 		Set<String> emails;
 		if (!WebsocketSinkServer.emailsToChannel.containsKey(email)) {
@@ -230,10 +230,10 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		case "requestCart":
 			inventoryController.requestCart(email);
 			break;
-		case "requestUser": //TODO FIX
+		case "getUser":
 			userController.getUser(jsonObject);
 			break;
-		case "changeUser": // TODO FIX
+		case "updateUser":
 			userController.changeUser(jsonObject);
 			break;
 		case "removeFromCart":
@@ -242,12 +242,6 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		default:
 			throw new IllegalArgumentException("Invalid type of request");
 		}
-		System.out.println(reqType);
-		//User user = new User();
-		//user.setFirstName(frame.text());
-		//userController.registerUser(user);
-		//auth.output().send(MessageBuilder.withPayload(user).build());
-		//ctx.channel().write(new TextWebSocketFrame("Echo: " + frame.text()));
 	}
 
 	// add trace information for received frame
