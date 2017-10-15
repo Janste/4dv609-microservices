@@ -9,6 +9,8 @@ public class RequestUser {
 	private boolean success;
 	private String error;
 	
+	private Type type;
+	
 	public String getChannelId() {
 		return channelId;
 	}
@@ -36,10 +38,19 @@ public class RequestUser {
 		this.error = error;
 	}
 	
+	public void setType(Type type) {
+		this.type = type;
+	}
+	
+	public Type getType() {
+		return type;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
+		sb.append("\"type\" : \"").append(type.toString()).append("\",");
 		if (success) {
 			sb.append("\"user\" : ").append(user.toString()).append(",");
 			sb.append("\"success\" :").append(success);
@@ -50,6 +61,13 @@ public class RequestUser {
 		}
 		sb.append("}");
 		return sb.toString();
+	}
+	
+	public enum Type {
+		register,
+		login,
+		getUser,
+		updateUser
 	}
 	
 }

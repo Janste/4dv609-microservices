@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 import java.io.IOException;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -18,6 +19,7 @@ import com.google.gson.JsonObject;
 
 import se.lnu.service.common.channels.Auth;
 import se.lnu.service.common.message.RequestUser;
+import se.lnu.service.common.message.User;
 
 @Controller
 @EnableBinding(Auth.class)
@@ -93,7 +95,10 @@ public class UserController {
     public void getUser(JsonObject json) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			RequestUser request = mapper.readValue(json.getAsJsonObject("user").toString(), RequestUser.class);
+			RequestUser request = mapper.readValue(json.toString(), RequestUser.class);
+			User user = new User();
+			user.setEmail(json.get("userEmail").getAsString());
+			request.setUser(user);
 			auth.getUserByEmailOutput().send(MessageBuilder.withPayload(request).build());
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -101,6 +106,19 @@ public class UserController {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+    }
+    
+    @StreamListener(Auth.GET_USER_BY_EMAIL_INPUT)
+    public void getUserSink(RequestUser user) {
+    	Set<String> channels = WebsocketSinkServer.emailsToChannel.getOrDefault(user.getUser().getEmail(), null);
+		if (channels != null) {
+			for (Channel channel : WebsocketSinkServer.channels) {
+				if (channels.contains(channel.id().toString())) {
+					channel.write(new TextWebSocketFrame(user.toString()));
+					channel.flush();
+				}
+			}
 		}
     }
 }

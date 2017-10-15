@@ -147,7 +147,6 @@ public class UserAccessLayer
                 user.setCountry(result.getString("country"));
                 user.setTelephone(result.getString("telephone"));
                 user.setEmail(result.getString("email"));
-                user.setPassword(result.getString("password"));
             }
             result.close();
             statement.close();

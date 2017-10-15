@@ -230,10 +230,10 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		case "requestCart":
 			inventoryController.requestCart(email);
 			break;
-		case "requestUser": //TODO FIX
+		case "getUser":
 			userController.getUser(jsonObject);
 			break;
-		case "changeUser": // TODO FIX
+		case "updateUser": // TODO FIX
 			userController.changeUser(jsonObject);
 			break;
 		case "removeFromCart":
@@ -242,7 +242,6 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		default:
 			throw new IllegalArgumentException("Invalid type of request");
 		}
-		System.out.println(reqType);
 		//User user = new User();
 		//user.setFirstName(frame.text());
 		//userController.registerUser(user);

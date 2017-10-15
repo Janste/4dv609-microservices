@@ -80,7 +80,7 @@ public class Application {
 	
 	@StreamListener(Auth.GET_USER_BY_EMAIL_INPUT)
 	@SendTo(Auth.GET_USER_BY_EMAIL_OUTPUT)
-	public RequestUser getserByEmail(RequestUser request) {
+	public RequestUser getUserByEmail(RequestUser request) {
 		logger.info("Getting user: " + request.getUser().toString());
 		
 		User user = repository.getUserByEmail(request.getUser().getEmail());
@@ -90,6 +90,7 @@ public class Application {
 			request.setUser(user);
 		} else {
 			request.setSuccess(false);
+			request.setError("Could not retreive user information");
 		}
 		return request;
 	}

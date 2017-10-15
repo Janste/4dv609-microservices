@@ -14,6 +14,12 @@ spring:
         login-user-out:
           destination: login.user.out2
           binder: rabbit1
+        get-user-out:
+          destination: get.user.out2
+          binder: rabbit1
+        get-user-in:
+          destination: get.user.out
+          binder: rabbit1
       binders:
         rabbit1:
           type: rabbit
