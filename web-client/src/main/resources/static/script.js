@@ -5,6 +5,7 @@ var serverUrl = "ws://localhost:9292/websocket";
 
 var registerButtonPressed = false;
 var loginButtonPressed = false;
+var getInventoryButtonPressed = false;
 
 function init() {
 	connectoToWebsocket();
@@ -23,8 +24,8 @@ function connectoToWebsocket() {
 			
 			var data = JSON.parse(event.data);
 			
-			if ('pets' in data) {
-				populatePetsList(data.pets);
+			if (getInventoryButtonPressed) {
+				handleGetInventoryResponse(data.pets);
 			}
 			else if (registerButtonPressed) {
 				handleRegisterOrLoginResponse(data);
@@ -62,7 +63,7 @@ function connectoToWebsocket() {
 
 function changeViewBetweenLoggedInAndLoggedOut() {
 	
-	var token = sessionStorage.getItem('token');
+	var token = getToken();
 	
 	if (token != null) {
 		document.getElementById('registerDiv').style.display = "none";
@@ -77,7 +78,7 @@ function changeViewBetweenLoggedInAndLoggedOut() {
 		document.getElementById('loginMenuItem').style.display = "inline";
 		document.getElementById('logoutMenuItem').style.display = "none";
 	}
-	
+	clearInventory();
 }
 
 function register() {
@@ -167,23 +168,46 @@ function getInventory() {
 		  "type": "requestInventory"
 		});
 		socket.send(msg);
-
+		getInventoryButtonPressed = true;
 	} else {
 		console.log("The socket is not open.");
 	}
 }
 
-function populatePetsList(pets) {
+function clearInventory() {
+	document.getElementById("petsList").innerHTML = "";
+}
+
+function handleGetInventoryResponse(pets) {
+	
+	clearInventory();
 	var ul = document.getElementById("petsList");
 	
 	for (var i = 0; i < pets.length; i++) {
 		
+		// New list item
 		var li = document.createElement("li");
 		li.appendChild(document.createTextNode("Name: " + pets[i].name + ", description: " + pets[i].description + ", price: " + pets[i].value + " SEK"));
 		li.className = "list-group-item";
-		ul.appendChild(li);
+		li.style = "padding: 20px"
 		
+		// Add to cart button 
+		if (getToken() != null) {
+			var addToCartButton = document.createElement("button");
+			addToCartButton.innerHTML = "Add to cart";
+			addToCartButton.className = "btn btn-default pull-right";
+			li.appendChild(addToCartButton);
+		}
+		
+		// Append to list
+		ul.appendChild(li);	
 	}
+	getInventoryButtonPressed = false;
+}
+
+function getToken() {
+	var token = sessionStorage.getItem('token');
+	return token;
 }
 
 function send(message) {
