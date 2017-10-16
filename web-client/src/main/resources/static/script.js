@@ -10,6 +10,7 @@ var getShoppingCartButtonPressed = false;
 var addToShoppingCartButtonPressed = false;
 var removeFromShoppingCartButtonPressed = false;
 var orderButtonPressed = false;
+var changeUserDataButtonPressed = false;
 
 function init() {
 	connectoToWebsocket();
@@ -48,6 +49,9 @@ function connectoToWebsocket() {
 			}
 			else if (orderButtonPressed) {
 				handleOrderResponse(data);
+			}
+			else if (changeUserDataButtonPressed) {
+				handleChangeUserDataResponse(data);
 			}
 			else {
 				console.log(data);
@@ -413,6 +417,17 @@ function handleOrderResponse(data) {
 	else {
 		setShoppingCartMessage("Something went wrong. Operation could not be completed.");
 	} 
+}
+
+function changeUserData() {
+	changeUserDataButtonPressed = true;
+	
+	
+}
+
+function handleChangeUserDataResponse(data) {
+	console.log(data);
+	changeUserDataButtonPressed = false;
 }
 
 function getToken() {
