@@ -239,6 +239,9 @@ class WebsocketSinkServerHandler extends SimpleChannelInboundHandler<Object> {
 		case "removeFromCart":
 			inventoryController.removeFromCart(jsonObject);
 			break;
+		case "completeOrder":
+			inventoryController.submitOrder(email);
+			break;
 		default:
 			throw new IllegalArgumentException("Invalid type of request");
 		}

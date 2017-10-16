@@ -8,7 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.lnu.service.common.animals.Pet;
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.CompleteOrderRequest;
 import se.lnu.service.common.message.RemoveFromCart;
 
 public class CartAccessLayer
@@ -98,6 +100,31 @@ public class CartAccessLayer
             e.printStackTrace();
         }
 
+        return success;
+    }
+    
+    public boolean emptyCart(CompleteOrderRequest request) {
+    	boolean success = false;
+    	List<Integer> res = getCartContents(request.getUserEmail());
+    	if (res.size() <= 0)
+    		return false;
+        try {
+            String sql = "DELETE FROM CART WHERE ownerEmail = ?;";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, request.getUserEmail());
+            
+            int num = ps.executeUpdate();
+            if (num > 0) {
+            	success = true;
+            }
+            ps.close();
+            connection.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        request.setPetIDs(res);
+        
         return success;
     }
 

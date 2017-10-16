@@ -345,12 +345,17 @@ function send(message) {
 		  "type": "requestInventory"
 		});*/
 
-		var msg = JSON.stringify({
+		/*var msg = JSON.stringify({
 			"type": "login",
 			"user" : {
 				"email" : "test@test.com",
 				"password" : "password"
 			}
+		});*/
+
+		var msg = JSON.stringify({
+			"type": "completeOrder",
+			"token": getToken()
 		});
 		
 		/*

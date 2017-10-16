@@ -21,6 +21,9 @@ public interface Inventory {
 	String REQUEST_CART_INPUT = "request-cart-in";
 	String REQUEST_CART_OUTPUT = "request-cart-out";
 	
+	String COMPLETE_REQUEST_INPUT = "complete-request-in";
+	String COMPLETE_REQUEST_OUTPUT = "complete-request-out";
+	
 	@Input(Inventory.ADD_CART_INPUT)
 	SubscribableChannel input();
 	
@@ -50,4 +53,10 @@ public interface Inventory {
 	
 	@Output(Inventory.REQUEST_CART_OUTPUT)
 	MessageChannel requestCartOutput();
+	
+	@Input(Inventory.COMPLETE_REQUEST_INPUT)
+	SubscribableChannel completeRequestInput();
+	
+	@Output(Inventory.COMPLETE_REQUEST_OUTPUT)
+	MessageChannel completeRequestOutput();
 }

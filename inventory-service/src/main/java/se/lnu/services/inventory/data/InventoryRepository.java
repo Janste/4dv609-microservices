@@ -22,4 +22,8 @@ public class InventoryRepository
     public List<Pet> getCartPets(List<Integer> ids) {
     	return InventoryAccessLayer.getInstance().getCartPets(ids);
     }
+    
+    public boolean removeSoldPets(List<Integer> ids) {
+    	return InventoryAccessLayer.getInstance().removePets(ids);
+    }
 }

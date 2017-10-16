@@ -24,6 +24,12 @@ spring:
         request-cart-out:
           destination: request.cart.out3
           binder: rabbit1
+        complete-request-out:
+          destination: complete.request.out3
+          binder: rabbit1
+        complete-request-in:
+          destination: complete.request.out2
+          binder: rabbit1
       binders:
         rabbit1:
           type: rabbit

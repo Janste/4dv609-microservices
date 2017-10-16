@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 
 import se.lnu.service.common.channels.Inventory;
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.CompleteOrderRequest;
 import se.lnu.service.common.message.RemoveFromCart;
 import se.lnu.service.common.message.RequestCart;
 import se.lnu.service.common.message.RequestPets;
@@ -72,6 +73,12 @@ public class InventoryController {
 		inventory.requestCartOutput().send(MessageBuilder.withPayload(cart).build());
 	}
 	
+	public void submitOrder(String email) {
+		CompleteOrderRequest request = new CompleteOrderRequest();
+		request.setUserEmail(email);
+		inventory.completeRequestOutput().send(MessageBuilder.withPayload(request).build());
+	}
+	
 	@StreamListener(Inventory.REQUEST_CART_INPUT)
 	public void requestCartInput(RequestCart cart) {
 		Set<String> channels = WebsocketSinkServer.emailsToChannel.getOrDefault(cart.getUserEmail(), null);
@@ -112,6 +119,20 @@ public class InventoryController {
 	
 	@StreamListener(Inventory.REMOVE_CART_INPUT)
 	public void websocketSink(RemoveFromCart message) {
+		String messagePayload = message.toString();
+		Set<String> channels = WebsocketSinkServer.emailsToChannel.getOrDefault(message.getUserEmail(), null);
+		if (channels != null) {
+			for (Channel channel : WebsocketSinkServer.channels) {
+				if (channels.contains(channel.id().toString())) {
+					channel.write(new TextWebSocketFrame(messagePayload));
+					channel.flush();
+				}
+			}
+		}
+	}
+	
+	@StreamListener(Inventory.COMPLETE_REQUEST_INPUT)
+	public void websocketSink(CompleteOrderRequest message) {
 		String messagePayload = message.toString();
 		Set<String> channels = WebsocketSinkServer.emailsToChannel.getOrDefault(message.getUserEmail(), null);
 		if (channels != null) {

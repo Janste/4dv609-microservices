@@ -15,6 +15,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import se.lnu.service.common.animals.Pet;
 import se.lnu.service.common.channels.Inventory;
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.CompleteOrderRequest;
 import se.lnu.service.common.message.RequestCart;
 import se.lnu.service.common.message.RequestPets;
 import se.lnu.services.inventory.data.InventoryRepository;
@@ -55,6 +56,20 @@ public class Application {
 	public RequestCart requestCart(RequestCart cart) {
 		cart.setPets(inventoryService.getCartPets(cart.getPetIDs()));
 		return cart;
+	}
+	
+	@StreamListener(Inventory.COMPLETE_REQUEST_INPUT)
+	@SendTo(Inventory.COMPLETE_REQUEST_OUTPUT)
+	public CompleteOrderRequest completeOrder(CompleteOrderRequest request) {
+		if (request.getPetIDs() != null) {
+			if (inventoryService.removeSoldPets(request.getPetIDs())) {
+				request.setSuccess(true);
+			}
+			else {
+				request.setSuccess(false);
+			}
+		}
+		return request;
 	}
 	
 	protected Logger logger = Logger.getLogger(Application.class.getName());

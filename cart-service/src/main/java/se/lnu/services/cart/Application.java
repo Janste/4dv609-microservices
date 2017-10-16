@@ -1,5 +1,6 @@
 package se.lnu.services.cart;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 
 import se.lnu.service.common.channels.Inventory;
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.CompleteOrderRequest;
 import se.lnu.service.common.message.RemoveFromCart;
 import se.lnu.service.common.message.RequestCart;
 import se.lnu.services.cart.data.CartRepository;
@@ -62,6 +64,16 @@ public class Application {
 		else {
 			request.setSuccess(false);
 			request.setError("Could not remove from cart.");
+		}
+		return request;
+	}
+	
+	@StreamListener(Inventory.COMPLETE_REQUEST_INPUT)
+	@SendTo(Inventory.COMPLETE_REQUEST_OUTPUT)
+	public CompleteOrderRequest completeOrder(CompleteOrderRequest request) {
+		if (!cartRepository.completeOrder(request)) {
+			request.setSuccess(false);
+			request.setError("No pets selected to order.");
 		}
 		return request;
 	}

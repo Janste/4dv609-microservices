@@ -3,6 +3,7 @@ package se.lnu.services.cart.data;
 import java.util.List;
 
 import se.lnu.service.common.message.AddToCart;
+import se.lnu.service.common.message.CompleteOrderRequest;
 import se.lnu.service.common.message.RemoveFromCart;
 import se.lnu.service.common.message.RequestCart;
 
@@ -18,5 +19,9 @@ public class CartRepository {
 	
 	public boolean removeFromCart(RemoveFromCart request) {
 		return CartAccessLayer.getInstance().removePet(request);
+	}
+	
+	public boolean completeOrder(CompleteOrderRequest request) {
+		return CartAccessLayer.getInstance().emptyCart(request);
 	}
 }

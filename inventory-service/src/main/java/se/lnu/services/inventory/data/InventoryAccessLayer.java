@@ -148,12 +148,20 @@ public class InventoryAccessLayer
     	return res;
     }
 
-    public boolean removePet(Pet pet) {
+    public boolean removePets(List<Integer> petIDs) {
     	boolean success = false;
         try {
-            String sql = "DELETE FROM INVENTORY WHERE id = ?;";
+        	StringBuilder petQuery = new StringBuilder();
+    		boolean first = true;
+    		for (int i : petIDs) {
+    			if (first)
+    				first = false;
+    			else
+    				petQuery.append(",");
+    			petQuery.append(i);
+    		}
+        	String sql = "DELETE FROM INVENTORY WHERE ID IN (" + petQuery.toString() + ");";
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, pet.getID());
             
             int num = ps.executeUpdate();
             if (num > 0) {
