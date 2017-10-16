@@ -8,6 +8,8 @@ var loginButtonPressed = false;
 var getInventoryButtonPressed = false;
 var getShoppingCartButtonPressed = false;
 var addToShoppingCartButtonPressed = false;
+var removeFromShoppingCartButtonPressed = false;
+var orderButtonPressed = false;
 
 function init() {
 	connectoToWebsocket();
@@ -36,11 +38,16 @@ function connectoToWebsocket() {
 				handleRegisterOrLoginResponse(data);
 			}
 			else if (getShoppingCartButtonPressed) {
-				console.log(data);
 				handleGetShoppingCartResponse(data.pets);
 			}
 			else if (addToShoppingCartButtonPressed) {
-				console.log(data);
+				handleAddToCart(data);
+			}
+			else if (removeFromShoppingCartButtonPressed) {
+				handleRemoveFromCart(data);
+			}
+			else if (orderButtonPressed) {
+				handleOrderResponse(data);
 			}
 			else {
 				console.log(data);
@@ -261,8 +268,25 @@ function handleGetShoppingCartResponse(pets) {
 		li.className = "list-group-item";
 		li.style = "padding: 20px"
 		
+		// Add to cart button 
+		var removeFromCartButton = document.createElement("button");
+		removeFromCartButton.innerHTML = "Remove";
+		removeFromCartButton.className = "btn btn-default pull-right";
+		
+		removeFromCartButton.setAttribute("pettype", pet.type);
+		removeFromCartButton.setAttribute("atpettype", pet["@type"]);
+		removeFromCartButton.setAttribute("petid", pet.id);
+		removeFromCartButton.setAttribute("petname", pet.name);
+		removeFromCartButton.setAttribute("petvalue", pet.value);
+		
+		removeFromCartButton.setAttribute("onclick", "removeFromCart(this);");
+		li.appendChild(removeFromCartButton);
+		
+		
 		// Append to list
 		ul.appendChild(li);	
+		
+		
 	}
 	
 	if (pets.length === 0) {
@@ -301,7 +325,94 @@ function addToCart(data) {
 	} else {
 		console.log("The socket is not open.");
 	}
+}
 
+function handleAddToCart(data) {
+	
+	if (data.success == true) {
+		getShoppingCart();
+		document.getElementById('inventoryMessageToUser').textContent = "";
+	} 
+	else {
+		document.getElementById('inventoryMessageToUser').textContent = data.error;
+	}
+		
+	addToShoppingCartButtonPressed = false;
+}
+
+function removeFromCart(data) {
+	var id = data.getAttribute("petid");
+	var type = data.getAttribute("pettype");
+	var attype = data.getAttribute("atpettype");
+	var name = data.getAttribute("petname");
+	var value = data.getAttribute("petvalue");
+
+	if (!window.WebSocket) {
+		return;
+	}
+	if (socket.readyState == WebSocket.OPEN) {
+
+		var msg = JSON.stringify({
+		  "type": "removeFromCart",
+		  "token": getToken(),
+		  "pet": {
+			  "@type": attype,
+			  "name": name,
+			  "value": value,
+			  "type": type,
+			  "id": id
+		  }
+		});
+		socket.send(msg);
+		removeFromShoppingCartButtonPressed = true;
+	} else {
+		console.log("The socket is not open.");
+	}
+}
+
+function handleRemoveFromCart(data) {
+	
+	if (data.success == true) {
+		getShoppingCart();
+	}
+	
+	removeFromShoppingCartButtonPressed = false;
+}
+
+function order() {
+	
+	var amount = document.getElementById("shoppingCartList").getElementsByTagName("li").length;
+	
+	if (amount == 0) {
+		setShoppingCartMessage("You need to add pets to the cart before you can buy.");
+	} 
+	else {
+		if (!window.WebSocket) {
+		return;
+		}
+		if (socket.readyState == WebSocket.OPEN) {
+
+			var msg = JSON.stringify({
+			  "type": "completeOrder",
+			  "token": getToken()
+			});
+			socket.send(msg);
+			orderButtonPressed = true;
+		} else {
+			console.log("The socket is not open.");
+		}
+	}
+}
+
+function handleOrderResponse(data) {
+	
+	if (data.success == true) {
+		getShoppingCart();
+		setShoppingCartMessage("You can successfully placed your order.");
+	} 
+	else {
+		setShoppingCartMessage("Something went wrong. Operation could not be completed.");
+	} 
 }
 
 function getToken() {
