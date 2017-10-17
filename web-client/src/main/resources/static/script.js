@@ -10,6 +10,7 @@ var getShoppingCartButtonPressed = false;
 var addToShoppingCartButtonPressed = false;
 var removeFromShoppingCartButtonPressed = false;
 var orderButtonPressed = false;
+var openChangeUserDataFormButtonPressed = false;
 var changeUserDataButtonPressed = false;
 
 function init() {
@@ -53,28 +54,24 @@ function connectoToWebsocket() {
 			else if (changeUserDataButtonPressed) {
 				handleChangeUserDataResponse(data);
 			}
+			else if (openChangeUserDataFormButtonPressed) {
+				handleGetUserDataResponse(data);
+			}
 			else {
+				console.log("Unknown response from server: ");
 				console.log(data);
 			}
 			
-
-			
-			var ta = document.getElementById('responseText');
-			ta.value = ta.value + '\n' + event.data
 		};
 		
 		// After opening the websocket
 		socket.onopen = function (event) {
-			var ta = document.getElementById('responseText');
-			ta.value = "Web Socket opened!";
-			document.getElementById('message').removeAttribute("disabled");
-			document.getElementById('sendButton').removeAttribute("disabled");
+			console.log("Web Socket opened!");
 		};
 		
 		// When closing the websocket
 		socket.onclose = function (event) {
-			var ta = document.getElementById('responseText');
-			ta.value = ta.value + "Web Socket closed";
+			console.log("Web Socket closed");
 		};
 	} else {
 		alert("Your browser does not support Web Socket.");
@@ -91,12 +88,14 @@ function changeViewBetweenLoggedInAndLoggedOut() {
 		document.getElementById('registerMenuItem').style.display = "none";
 		document.getElementById('loginMenuItem').style.display = "none";
 		document.getElementById('logoutMenuItem').style.display = "inline";
+		document.getElementById('changeUserDataDiv').style.display = "inline";
 	} else {
 		document.getElementById('registerDiv').style.display = "inline";
 		document.getElementById('loginDiv').style.display = "inline";
 		document.getElementById('registerMenuItem').style.display = "inline";
 		document.getElementById('loginMenuItem').style.display = "inline";
 		document.getElementById('logoutMenuItem').style.display = "none";
+		document.getElementById('changeUserDataDiv').style.display = "none";
 	}
 	clearInventory();
 	clearShoppingCart();
@@ -157,7 +156,7 @@ function logout() {
 }
 
 function handleRegisterOrLoginResponse(data) {
-	console.log(data);
+
 	if (data.success == true) {
 		
 		sessionStorage.setItem('token', data.user.token);
@@ -419,14 +418,113 @@ function handleOrderResponse(data) {
 	} 
 }
 
+function openChangeUserDataForm() {
+	
+	document.getElementById('changeUserDataForm').style.display = "inline";
+	
+	if (!window.WebSocket) {
+		return;
+	}
+	if (socket.readyState == WebSocket.OPEN) {
+
+		var msg = JSON.stringify({
+		  "type": "getUser",
+		  "token": getToken()
+		});
+		socket.send(msg);
+		openChangeUserDataFormButtonPressed = true;
+	} else {
+		console.log("The socket is not open.");
+	}	
+}
+
+function handleGetUserDataResponse(data) {
+	if (data.success == true) {
+		document.getElementById('changeFirstName').value = data.user.firstName;
+		document.getElementById('changeSecondName').value = data.user.secondName;
+		document.getElementById('changeStreetAddress').value = data.user.streetAddress;
+		document.getElementById('changeCity').value = data.user.city;
+		document.getElementById('changeState').value = data.user.state;
+		document.getElementById('changeZipCode').value = data.user.zipCode;
+		document.getElementById('changeCountry').value = data.user.country;
+		document.getElementById('changeTelephone').value = data.user.telephone;
+		document.getElementById('changeEmail').value = data.user.email;
+	} 
+	else {
+		document.getElementById('changeUserMessageToUser').textContent = "An error occured."; 
+	} 
+	openChangeUserDataFormButtonPressed = false;
+}
+
 function changeUserData() {
-	changeUserDataButtonPressed = true;
 	
+	if (areFieldsEmptyInChangeUserDataForm()) {
+		document.getElementById('changeUserMessageToUser').textContent = "All fields must be filled in";
+		return;
+	}
 	
+	if (!window.WebSocket) {
+		return;
+	}
+	if (socket.readyState == WebSocket.OPEN) {
+
+		var msg = JSON.stringify({
+		  "type": "updateUser",
+		  "token": getToken(),
+		  "user": {
+			"firstName" : document.getElementById('changeFirstName').value,
+			"secondName" : document.getElementById('changeSecondName').value,
+			"streetAddress" : document.getElementById('changeStreetAddress').value,
+			"city" : document.getElementById('changeCity').value,
+			"state" : document.getElementById('changeState').value,
+			"zipCode" : document.getElementById('changeZipCode').value,
+			"country" : document.getElementById('changeCountry').value,
+			"telephone" : document.getElementById('changeTelephone').value,
+			"email" : document.getElementById('changeEmail').value,
+			"password" : document.getElementById('changePassword').value
+		}
+		});
+		socket.send(msg);
+		changeUserDataButtonPressed = true;
+	} else {
+		console.log("The socket is not open.");
+	}
+}
+
+function areFieldsEmptyInChangeUserDataForm() {
+	var fn = document.getElementById('changeFirstName').value;
+	var sn = document.getElementById('changeSecondName').value;
+	var sr = document.getElementById('changeStreetAddress').value;
+	var ci = document.getElementById('changeCity').value;
+	var st = document.getElementById('changeState').value;
+	var zc = document.getElementById('changeZipCode').value;
+	var co = document.getElementById('changeCountry').value;
+	var te = document.getElementById('changeTelephone').value;
+	var em = document.getElementById('changeEmail').value;
+	var pa = document.getElementById('changePassword').value;
+	
+	return (fn == "" || sn == "" || sr == "" || ci == "" || st == "" || zc == "" || co == "" || te == "" || em == "" || pa == "");
 }
 
 function handleChangeUserDataResponse(data) {
-	console.log(data);
+
+	if (data.success == true) {
+		
+		document.getElementById('changeUserMessageToUser').textContent = "Your data has been successfully changed"
+		
+		document.getElementById('changeFirstName').value = data.user.firstName;
+		document.getElementById('changeSecondName').value = data.user.secondName;
+		document.getElementById('changeStreetAddress').value = data.user.streetAddress;
+		document.getElementById('changeCity').value = data.user.city;
+		document.getElementById('changeState').value = data.user.state;
+		document.getElementById('changeZipCode').value = data.user.zipCode;
+		document.getElementById('changeCountry').value = data.user.country;
+		document.getElementById('changeTelephone').value = data.user.telephone;
+		document.getElementById('changeEmail').value = data.user.email;
+	} 
+	else {
+		document.getElementById('changeUserMessageToUser').textContent = data.error; 
+	}
 	changeUserDataButtonPressed = false;
 }
 
@@ -448,84 +546,3 @@ function setShoppingCartMessage(msg) {
 	document.getElementById('shoppingCartMessageToUser').textContent = msg;
 }
 
-function send(message) {
-	if (!window.WebSocket) {
-		return;
-	}
-	if (socket.readyState == WebSocket.OPEN) {
-		/*var msg = JSON.stringify({
-			"token": i++ + " ",
-			"type": "addToCart",
-			"pet" : 
-			{
-				"@type" : "Cat",
-				"name" : "Mew",
-				"value" : 14124,
-				"type" : "Siberian",
-				"id": i,
-			}
-		});
-		*/
-		
-		/*var msg = JSON.stringify({
-		  "type": "requestInventory"
-		});*/
-
-		/*var msg = JSON.stringify({
-			"type": "login",
-			"user" : {
-				"email" : "test@test.com",
-				"password" : "password"
-			}
-		});*/
-
-		var msg = JSON.stringify({
-			"type": "completeOrder",
-			"token": getToken()
-		});
-		
-		/*
-			var msg = JSON.stringify({
-                "token": "test",
-                "type": "removeFromCart",
-                "pet" : 
-                {
-                    "@type" : "Cat",
-                    "name" : "Mew",
-                    "value" : 14124,
-                    "type" : "Siberian",
-                    "id": i++,
-                }
-            });
-		*/
-		
-		
-		/*
-		var msg = JSON.stringify({
-		  "type": "requestCart",
-		  "token": "test"
-		});
-		
-		*/
-		
-		/*
-		"user" : 
-			{
-				"firstName" : "Robert",
-				"secondName" : "Nilsson",
-				"streetAddress" : "Street 12",
-				"city" : "Stockholm",
-				"state" : "-",
-				"zipCode" : "12345",
-				"country" : "Sweden",
-				"telephone" : "987654321",
-				"email" : "robert.nilsson@gmail.com",
-				"password" : "my_password"
-			}
-		*/
-		
-		socket.send(msg);
-	} else {
-		alert("The socket is not open.");
-	}
-}

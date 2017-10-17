@@ -127,30 +127,59 @@
 		<label id="shoppingCartMessageToUser" style="color: blue;"></label>
 	</div>
 	
-	<div class="col-md-8 col-md-offset-2 text-left"> 
+	<div id="changeUserDataDiv" class="col-md-8 col-md-offset-2 text-left"> 
 		<h1>Change user data</h1>
 		<p>Here you can change information about yourself.</p>
-		<p><button type="button" class="btn btn-primary" onclick="changeUserData();">Change user data</button></p>
+		<p><button type="button" class="btn btn-primary" onclick="openChangeUserDataForm();">Open form</button></p>
+		<div id="changeUserDataForm" style="display: none;">
+			<form onsubmit="return false;">
+				<div class="form-group">
+					<label>First name:</label>
+					<input class="form-control" id="changeFirstName">
+				</div>
+				<div class="form-group">
+					<label>Second name:</label>
+					<input class="form-control" id="changeSecondName">
+				</div>
+				<div class="form-group">
+					<label>Street address:</label>
+					<input class="form-control" id="changeStreetAddress">
+				</div>
+				<div class="form-group">
+					<label>City:</label>
+					<input class="form-control" id="changeCity">
+				</div>
+				<div class="form-group">
+					<label>State:</label>
+					<input class="form-control" id="changeState">
+				</div>
+				<div class="form-group">
+					<label>Zip code:</label>
+					<input class="form-control" id="changeZipCode">
+				</div>
+				<div class="form-group">
+					<label>Country:</label>
+					<input class="form-control" id="changeCountry">
+				</div>
+				<div class="form-group">
+					<label>Telephone:</label>
+					<input class="form-control" id="changeTelephone">
+				</div>
+				<div class="form-group">
+					<label for="email">Email address:</label>
+					<input type="email" class="form-control" id="changeEmail">
+				</div>
+				<div class="form-group">
+					<label for="pwd">Password:</label>
+					<input type="password" class="form-control" id="changePassword">
+				</div>
+				<button type="submit" class="btn btn-success" onclick="changeUserData();">Change my data</button>
+			</form>
+		</div>
+		<br />
 		<label id="changeUserMessageToUser" style="color: blue;"></label>
 	</div>
 
-
-  <div class="row content">
-    <div class="col-md-8 col-md-offset-2 text-left"> 
-		<h1>Welcome</h1>
-		<form onsubmit="return false;">
-			<input name="url" value="ws://localhost:9292/websocket"/>
-			<input type="button" value="Connect" onclick="connectoToWebsocket(this.form.url.value)"/> <br/>
-
-			<input type="text" name="message" id="message" value="Hello, World!" disabled="disabled"/>
-			<input type="button" id="sendButton" name="sendButton" value="Send Web Socket Data" onclick="send(this.form.message.value)"
-			disabled="disabled"/>
-
-			<h3>Output</h3>
-			<textarea id="responseText" style="width:500px;height:300px;"></textarea>
-		</form>
-    </div>
-  </div>
 </div>
 </body>
 </html>
