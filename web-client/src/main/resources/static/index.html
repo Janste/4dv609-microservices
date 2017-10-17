@@ -23,13 +23,13 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="#">Pets</a></li>
+        <li class="active"><a href="#top">Home</a></li>
+        <li><a href="#inventoryDiv">Pets</a></li>
       </ul>
 	  <ul class="nav navbar-nav navbar-right">
-		<li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> Shopping cart</a></li>
-		<li id="loginMenuItem"><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-        <li id="registerMenuItem"><a href="#"><span class="glyphicon glyphicon-log-in"></span> Register</a></li>
+		<li><a href="#shoppingCartDiv"><span class="glyphicon glyphicon-shopping-cart"></span> Shopping cart</a></li>
+		<li id="loginMenuItem"><a href="#loginDiv"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        <li id="registerMenuItem"><a href="#registerDiv"><span class="glyphicon glyphicon-log-in"></span> Register</a></li>
 		<li id="logoutMenuItem"><a href="" onclick="logout();"><span class="glyphicon glyphicon-log-in"></span> Log out</a></li>
       </ul>
     </div>
@@ -106,7 +106,7 @@
 	</div>
 	
 
-	<div class="col-md-8 col-md-offset-2 text-left"> 
+	<div id="inventoryDiv" class="col-md-8 col-md-offset-2 text-left"> 
 		<h1>Pet store</h1>
 		<p>Here you can browse and add to cart the pets you would like to buy.</p>
 		<p><button type="button" class="btn btn-primary" onclick="getInventory();">Browse pet store</button></p>
@@ -116,7 +116,7 @@
 		<label id="inventoryMessageToUser" style="color: blue;"></label>
 	</div>
 
-	<div class="col-md-8 col-md-offset-2 text-left"> 
+	<div id="shoppingCartDiv" class="col-md-8 col-md-offset-2 text-left"> 
 		<h1>Shopping cart</h1>
 		<p>Here you can see what pets you have in your shopping cart.</p>
 		<p><button type="button" class="btn btn-primary" onclick="getShoppingCart();">Browse shopping cart</button></p>
