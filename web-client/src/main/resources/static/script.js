@@ -3,19 +3,8 @@ window.onload = init;
 var socket;
 var serverUrl = "ws://localhost:9292/websocket";
 
-var registerButtonPressed = false;
-var loginButtonPressed = false;
-var getInventoryButtonPressed = false;
-var getShoppingCartButtonPressed = false;
-var addToShoppingCartButtonPressed = false;
-var removeFromShoppingCartButtonPressed = false;
-var orderButtonPressed = false;
-var openChangeUserDataFormButtonPressed = false;
-var changeUserDataButtonPressed = false;
-
 function init() {
 	connectoToWebsocket();
-	changeViewBetweenLoggedInAndLoggedOut();
 }
 
 function connectoToWebsocket() {
@@ -30,43 +19,45 @@ function connectoToWebsocket() {
 			
 			var data = JSON.parse(event.data);
 			
-			if (getInventoryButtonPressed) {
-				handleGetInventoryResponse(data.pets);
-			}
-			else if (registerButtonPressed) {
-				handleRegisterOrLoginResponse(data);
-			}
-			else if (loginButtonPressed) {
-				handleRegisterOrLoginResponse(data);
-			}
-			else if (getShoppingCartButtonPressed) {
-				handleGetShoppingCartResponse(data.pets);
-			}
-			else if (addToShoppingCartButtonPressed) {
-				handleAddToCart(data);
-			}
-			else if (removeFromShoppingCartButtonPressed) {
-				handleRemoveFromCart(data);
-			}
-			else if (orderButtonPressed) {
-				handleOrderResponse(data);
-			}
-			else if (changeUserDataButtonPressed) {
-				handleChangeUserDataResponse(data);
-			}
-			else if (openChangeUserDataFormButtonPressed) {
-				handleGetUserDataResponse(data);
-			}
-			else {
-				console.log("Unknown response from server: ");
-				console.log(data);
-			}
-			
+			var type = data["type"];
+
+			switch (type) {
+				case "requestInventory":
+					handleGetInventoryResponse(data.pets);
+					break;
+				case "register":
+				case "login":
+					handleRegisterOrLoginResponse(data);
+					break;
+				case "requestCart":
+					handleGetShoppingCartResponse(data.pets);
+					break;
+				case "addToCart":
+					handleAddToCart(data);
+					break;
+				case "removeFromCart":
+					handleRemoveFromCart(data);
+					break;
+				case "completeOrder":
+					handleOrderResponse(data);
+					break;
+				case "updateUser":
+					handleChangeUserDataResponse(data);
+					break;
+				case "getUser":
+					handleGetUserDataResponse(data);
+					break;
+				default:
+					console.log("Unknown response");
+					console.log(data);
+			}			
 		};
 		
 		// After opening the websocket
 		socket.onopen = function (event) {
 			console.log("Web Socket opened!");
+			getInventory();
+			changeViewBetweenLoggedInAndLoggedOut();
 		};
 		
 		// When closing the websocket
@@ -78,27 +69,88 @@ function connectoToWebsocket() {
 	}
 }
 
+function hideRegister() {
+	document.getElementById('registerDiv').style.display = "none";
+}
+
+function hideLogin() {
+	document.getElementById('loginDiv').style.display = "none";
+}
+
+function hideCart() {
+	document.getElementById('shoppingCartDiv').style.display = "none";
+}
+
+function hidePets() {
+	document.getElementById('inventoryDiv').style.display = "none";
+}
+
+function hideSettings() {
+	document.getElementById('changeUserDataDiv').style.display = "none";
+}
+
+function showInventory() {
+	hideRegister();
+	hideLogin();
+	hideCart();
+	hideSettings();
+	document.getElementById('inventoryDiv').style.display = "inline";
+	getInventory();
+}
+
+function showLogin() {
+	hideRegister();
+	hideCart();
+	hideSettings();
+	hidePets();
+	document.getElementById('loginDiv').style.display = "inline";
+}
+
+function showRegister() {
+	hideLogin();
+	hideCart();
+	hideSettings();
+	hidePets();
+	document.getElementById('registerDiv').style.display = "inline";
+}
+
+function showCart() {
+	hideLogin();
+	hideRegister();
+	hideSettings();
+	hidePets();
+	document.getElementById('shoppingCartDiv').style.display = "inline";
+	getShoppingCart();
+}
+
+function showEdit() {
+	hideLogin();
+	hideRegister();
+	hideCart();
+	hidePets();
+	document.getElementById('changeUserDataDiv').style.display = "inline";
+	openChangeUserDataForm();
+}
+
 function changeViewBetweenLoggedInAndLoggedOut() {
 	
 	var token = getToken();
 	
 	if (token != null) {
-		document.getElementById('registerDiv').style.display = "none";
-		document.getElementById('loginDiv').style.display = "none";
+		hideRegister();
+		hideLogin();
+		showInventory();
 		document.getElementById('registerMenuItem').style.display = "none";
 		document.getElementById('loginMenuItem').style.display = "none";
 		document.getElementById('logoutMenuItem').style.display = "inline";
-		document.getElementById('changeUserDataDiv').style.display = "inline";
+		document.getElementById('editUser').style.display = "inline";
 	} else {
-		document.getElementById('registerDiv').style.display = "inline";
-		document.getElementById('loginDiv').style.display = "inline";
+		showLogin();
 		document.getElementById('registerMenuItem').style.display = "inline";
 		document.getElementById('loginMenuItem').style.display = "inline";
 		document.getElementById('logoutMenuItem').style.display = "none";
-		document.getElementById('changeUserDataDiv').style.display = "none";
+		document.getElementById('editUser').style.display = "none";
 	}
-	clearInventory();
-	clearShoppingCart();
 }
 
 function register() {
@@ -124,14 +176,13 @@ function register() {
 			}
 		});
 		socket.send(msg);
-		registerButtonPressed = true;
 	} else {
 		console.log("The socket is not open.");
 	}
 }
 
 function login() {
-		if (!window.WebSocket) {
+	if (!window.WebSocket) {
 		return;
 	}
 	if (socket.readyState == WebSocket.OPEN) {
@@ -145,7 +196,6 @@ function login() {
 			}
 		});
 		socket.send(msg);
-		loginButtonPressed = true;
 	} else {
 		console.log("The socket is not open.");
 	}
@@ -153,6 +203,7 @@ function login() {
 
 function logout() {
 	sessionStorage.clear();
+	location.reload();
 }
 
 function handleRegisterOrLoginResponse(data) {
@@ -161,21 +212,18 @@ function handleRegisterOrLoginResponse(data) {
 		
 		sessionStorage.setItem('token', data.user.token);
 		sessionStorage.setItem('email', data.user.email);
-		
+		changeViewBetweenLoggedInAndLoggedOut();
 	} 
 	else {
-		if (registerButtonPressed) {
+		if (data.type == "register") {
 			document.getElementById('registerMessageToUser').style.color = "red";
 			document.getElementById('registerMessageToUser').textContent = data.error;
 		}
-		else if (loginButtonPressed) {
+		else if (data.type == "login") {
 			document.getElementById('loginMessageToUser').style.color = "red";
 			document.getElementById('loginMessageToUser').textContent = data.error;
 		}
 	}
-	registerButtonPressed = false;
-	loginButtonPressed = false;
-	changeViewBetweenLoggedInAndLoggedOut();
 }
 
 function getInventory() {
@@ -188,7 +236,6 @@ function getInventory() {
 		  "type": "requestInventory"
 		});
 		socket.send(msg);
-		getInventoryButtonPressed = true;
 	} else {
 		console.log("The socket is not open.");
 	}
@@ -198,7 +245,6 @@ function handleGetInventoryResponse(pets) {
 	
 	clearInventory();
 	var ul = document.getElementById("petsList");
-	
 	for (var i = 0; i < pets.length; i++) {
 		
 		// New list item
@@ -229,11 +275,9 @@ function handleGetInventoryResponse(pets) {
 		// Append to list
 		ul.appendChild(li);	
 	}
-	getInventoryButtonPressed = false;
 }
 
 function getShoppingCart() {
-	
 	if (getToken() == null) {
 		setShoppingCartMessage("You need to log in first before you can add items to your shopping cart.");
 		return;
@@ -249,7 +293,6 @@ function getShoppingCart() {
 		  "token": getToken()
 		});
 		socket.send(msg);
-		getShoppingCartButtonPressed = true;
 	} else {
 		console.log("The socket is not open.");
 	}
@@ -258,7 +301,6 @@ function getShoppingCart() {
 function handleGetShoppingCartResponse(pets) {
 	
 	clearShoppingCart();
-	
 	var ul = document.getElementById("shoppingCartList");
 	
 	for (var i = 0; i < pets.length; i++) {
@@ -295,8 +337,6 @@ function handleGetShoppingCartResponse(pets) {
 	if (pets.length === 0) {
 		setShoppingCartMessage("There are no pets in your shopping cart");
 	}
-	
-	getShoppingCartButtonPressed = false;
 }
 
 function addToCart(data) {
@@ -324,7 +364,6 @@ function addToCart(data) {
 		  }
 		});
 		socket.send(msg);
-		addToShoppingCartButtonPressed = true;
 	} else {
 		console.log("The socket is not open.");
 	}
@@ -333,14 +372,11 @@ function addToCart(data) {
 function handleAddToCart(data) {
 	
 	if (data.success == true) {
-		getShoppingCart();
-		document.getElementById('inventoryMessageToUser').textContent = "";
+		document.getElementById('inventoryMessageToUser').textContent = "Successfully added to cart.";
 	} 
 	else {
 		document.getElementById('inventoryMessageToUser').textContent = data.error;
 	}
-		
-	addToShoppingCartButtonPressed = false;
 }
 
 function removeFromCart(data) {
@@ -367,7 +403,6 @@ function removeFromCart(data) {
 		  }
 		});
 		socket.send(msg);
-		removeFromShoppingCartButtonPressed = true;
 	} else {
 		console.log("The socket is not open.");
 	}
@@ -378,8 +413,6 @@ function handleRemoveFromCart(data) {
 	if (data.success == true) {
 		getShoppingCart();
 	}
-	
-	removeFromShoppingCartButtonPressed = false;
 }
 
 function order() {
@@ -400,7 +433,6 @@ function order() {
 			  "token": getToken()
 			});
 			socket.send(msg);
-			orderButtonPressed = true;
 		} else {
 			console.log("The socket is not open.");
 		}
@@ -410,8 +442,9 @@ function order() {
 function handleOrderResponse(data) {
 	
 	if (data.success == true) {
-		getShoppingCart();
-		setShoppingCartMessage("You can successfully placed your order.");
+		clearShoppingCart();
+		getInventory();
+		setShoppingCartMessage("You have successfully placed your order.");
 	} 
 	else {
 		setShoppingCartMessage("Something went wrong. Operation could not be completed.");
@@ -432,7 +465,6 @@ function openChangeUserDataForm() {
 		  "token": getToken()
 		});
 		socket.send(msg);
-		openChangeUserDataFormButtonPressed = true;
 	} else {
 		console.log("The socket is not open.");
 	}	
@@ -453,7 +485,6 @@ function handleGetUserDataResponse(data) {
 	else {
 		document.getElementById('changeUserMessageToUser').textContent = "An error occured."; 
 	} 
-	openChangeUserDataFormButtonPressed = false;
 }
 
 function changeUserData() {
@@ -485,7 +516,6 @@ function changeUserData() {
 		}
 		});
 		socket.send(msg);
-		changeUserDataButtonPressed = true;
 	} else {
 		console.log("The socket is not open.");
 	}
@@ -525,7 +555,6 @@ function handleChangeUserDataResponse(data) {
 	else {
 		document.getElementById('changeUserMessageToUser').textContent = data.error; 
 	}
-	changeUserDataButtonPressed = false;
 }
 
 function getToken() {
@@ -539,6 +568,7 @@ function clearInventory() {
 
 function clearShoppingCart() {
 	document.getElementById("shoppingCartList").innerHTML = "";
+	document.getElementById('inventoryMessageToUser').textContent = "";
 	setShoppingCartMessage("");
 }
 

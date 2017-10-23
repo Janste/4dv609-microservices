@@ -24,13 +24,14 @@
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li class="active"><a href="#top">Home</a></li>
-        <li><a href="#inventoryDiv">Pets</a></li>
+        <li><a style="cursor: pointer" onclick="showInventory();">Pets</a></li>
       </ul>
 	  <ul class="nav navbar-nav navbar-right">
-		<li><a href="#shoppingCartDiv"><span class="glyphicon glyphicon-shopping-cart"></span> Shopping cart</a></li>
-		<li id="loginMenuItem"><a href="#loginDiv"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-        <li id="registerMenuItem"><a href="#registerDiv"><span class="glyphicon glyphicon-log-in"></span> Register</a></li>
-		<li id="logoutMenuItem"><a href="" onclick="logout();"><span class="glyphicon glyphicon-log-in"></span> Log out</a></li>
+		<li><a style="cursor: pointer" onclick="showCart();"><span class="glyphicon glyphicon-shopping-cart"></span> Shopping cart</a></li>
+		<li id="loginMenuItem"><a style="cursor: pointer" onclick="showLogin();"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        <li id="registerMenuItem"><a style="cursor: pointer" onclick="showRegister();"><span class="glyphicon glyphicon-log-in"></span> Register</a></li>
+        <li id="editUser"><a style="cursor: pointer" style="cursor: pointer" onclick="showEdit();"><span class="glyphicon glyphicon-log-in"></span> Profile</a></li>
+		<li id="logoutMenuItem"><a style="cursor: pointer" onclick="logout();"><span class="glyphicon glyphicon-log-in"></span> Log out</a></li>
       </ul>
     </div>
   </div>
@@ -109,7 +110,6 @@
 	<div id="inventoryDiv" class="col-md-8 col-md-offset-2 text-left"> 
 		<h1>Pet store</h1>
 		<p>Here you can browse and add to cart the pets you would like to buy.</p>
-		<p><button type="button" class="btn btn-primary" onclick="getInventory();">Browse pet store</button></p>
 		<ul id="petsList" class="list-group">
 
 		</ul>
@@ -119,7 +119,6 @@
 	<div id="shoppingCartDiv" class="col-md-8 col-md-offset-2 text-left"> 
 		<h1>Shopping cart</h1>
 		<p>Here you can see what pets you have in your shopping cart.</p>
-		<p><button type="button" class="btn btn-primary" onclick="getShoppingCart();">Browse shopping cart</button></p>
 		<ul id="shoppingCartList" class="list-group">
 			
 		</ul>
@@ -130,7 +129,6 @@
 	<div id="changeUserDataDiv" class="col-md-8 col-md-offset-2 text-left"> 
 		<h1>Change user data</h1>
 		<p>Here you can change information about yourself.</p>
-		<p><button type="button" class="btn btn-primary" onclick="openChangeUserDataForm();">Open form</button></p>
 		<div id="changeUserDataForm" style="display: none;">
 			<form onsubmit="return false;">
 				<div class="form-group">
